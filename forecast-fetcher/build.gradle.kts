@@ -30,6 +30,9 @@ dependencies {
     implementation("com.sksamuel.hoplite:hoplite-core:$hopliteVersion")
     implementation("com.sksamuel.hoplite:hoplite-hocon:$hopliteVersion")
 
+    // Kafka
+    implementation("org.apache.kafka:kafka-clients:4.0.0")
+
     // Test
     testImplementation(kotlin("test"))
 }
