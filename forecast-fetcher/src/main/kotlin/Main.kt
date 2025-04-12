@@ -17,6 +17,10 @@ private val logger = KotlinLogging.logger {}
 suspend fun main() {
     logger.info { "Starting forecast-fetcher..." }
 
+    Runtime.getRuntime().addShutdownHook(Thread {
+        logger.info { "Shutting down forecast-fetcher..." }
+    })
+
     val config = loadConfig()
     logger.info { "Loaded config: ${config.locations.size} locations, Kafka topic: ${config.kafka.topic}" }
 

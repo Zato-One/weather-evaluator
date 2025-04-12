@@ -1,0 +1,15 @@
+.git
+.gradle
+build/
+out/
+.idea
+*.iml
+*.log
+node_modules/
+*.jar
+.DS_Store
+*.swp
+__pycache__/
+target/
+*.class
+Dropbox/

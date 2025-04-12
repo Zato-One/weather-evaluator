@@ -15,3 +15,25 @@ subprojects {
         mavenCentral()
     }
 }
+
+tasks.register("startKafka") {
+    group = "docker"
+    description = "Run only Kafka broker by docker-compose.kafka.yml in WSL"
+
+    doLast {
+        exec {
+            commandLine("wsl", "docker-compose", "-f", "docker-compose.kafka.yml", "up")
+        }
+    }
+}
+
+tasks.register("startAll") {
+    group = "docker"
+    description = "Run whole stack (Kafka + all microservices) in WSL"
+
+    doLast {
+        exec {
+            commandLine("wsl", "docker-compose", "up", "--build")
+        }
+    }
+}
