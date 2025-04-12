@@ -1,7 +1,12 @@
 package cz.savic.weatherevaluator.forecastfetcher.config
 
-import com.sksamuel.hoplite.ConfigLoader
+import com.sksamuel.hoplite.ConfigLoaderBuilder
+import com.sksamuel.hoplite.ExperimentalHoplite
 
+@OptIn(ExperimentalHoplite::class)
 fun loadConfig(): AppConfig {
-    return ConfigLoader().loadConfigOrThrow<AppConfig>("/application.conf")
+    return ConfigLoaderBuilder.default()
+        .withExplicitSealedTypes()
+        .build()
+        .loadConfigOrThrow("/application.conf")
 }
