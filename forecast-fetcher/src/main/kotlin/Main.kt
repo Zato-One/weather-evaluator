@@ -10,7 +10,6 @@ import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 
 private val logger = KotlinLogging.logger {}
@@ -34,13 +33,14 @@ suspend fun main() {
     }
 
     val adapter = OpenMeteoAdapter(client)
-
     val kafkaProducer = createKafkaProducer(config.kafka.bootstrapServers)
     val eventProducer = ForecastEventProducer(kafkaProducer, config.kafka.topic)
     val service = ForecastFetcherService(adapter, eventProducer)
 
     service.fetchAll(config.locations)
-    
+
+    eventProducer.logFinalSummary()
+
     logger.info { "Flushing producer..." }
     kafkaProducer.flush()
     

@@ -2,12 +2,10 @@ package cz.savic.weatherevaluator.forecastfetcher.event
 
 import cz.savic.weatherevaluator.forecastfetcher.util.serialization.ForecastJson
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.producer.ProducerRecord
-import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 
 class ForecastEventProducer(
     private val kafkaProducer: Producer<String, String>,
@@ -15,25 +13,34 @@ class ForecastEventProducer(
     private val json: Json = ForecastJson
 ) {
     private val logger = KotlinLogging.logger {}
+    private val messageCount = AtomicInteger(0)
 
     fun send(event: ForecastFetchedEvent) {
         val key = event.location.name
-        
+
         val message = when (event) {
             is DailyForecastFetchedEvent -> json.encodeToString(event)
             is HourlyForecastFetchedEvent -> json.encodeToString(event)
         }
-        
+
         val record = ProducerRecord(topic, key, message)
 
-        kafkaProducer.send(record) { metadata, exception ->
-            if (exception != null) {
-                logger.error(exception) { "Failed to send forecast event for ${event.location.name}" }
-            } else if (logger.isTraceEnabled()) {
-                logger.trace { "Sent forecast event $event to ${metadata.topic()} [${metadata.partition()}]" }
-            } else {
-                logger.info { "Sent forecast event for ${event.location.name}" }
+        try {
+            kafkaProducer.send(record)
+            messageCount.incrementAndGet()
+
+            if (logger.isTraceEnabled()) {
+                logger.trace { "Sent forecast event $event" }
             }
+        } catch (ex: Exception) {
+            logger.error(ex) { "Failed to send forecast event for ${event.location.name}" }
+        }
+    }
+
+    fun logFinalSummary() {
+        val count = messageCount.getAndSet(0)
+        if (count > 0) {
+            logger.info { "Final summary: Sent $count forecast events since last log" }
         }
     }
 }
