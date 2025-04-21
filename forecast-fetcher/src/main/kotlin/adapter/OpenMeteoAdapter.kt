@@ -1,39 +1,67 @@
 package cz.savic.weatherevaluator.forecastfetcher.adapter
 
-import cz.savic.weatherevaluator.forecastfetcher.model.Location
+import cz.savic.weatherevaluator.common.model.ForecastGranularity
+import cz.savic.weatherevaluator.forecastfetcher.model.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import java.time.LocalDate
+import java.time.LocalDateTime
 
+class OpenMeteoAdapter(
+    private val client: HttpClient
+) : ForecastProvider {
 
-class OpenMeteoAdapter(private val client: HttpClient) : ForecastProvider {
-    override suspend fun fetch(location: Location): ForecastResult {
-        val response: OpenMeteoResponse = client.get("https://api.open-meteo.com/v1/forecast") {
+    companion object {
+        private const val ADAPTER_SOURCE_NAME = "open-meteo"
+        private const val BASE_URL = "https://api.open-meteo.com/v1/forecast"
+        private const val DAILY_PARAMS =
+            "temperature_2m_min,temperature_2m_max,temperature_2m_mean,precipitation_sum,wind_speed_10m_max"
+        private const val HOURLY_PARAMS =
+            "temperature_2m,precipitation,wind_speed_10m"
+    }
+
+    override fun supportedGranularities(): Set<ForecastGranularity> =
+        setOf(ForecastGranularity.HOURLY, ForecastGranularity.DAILY)
+
+    override suspend fun fetch(location: Location): List<ForecastResult> {
+        val response: OpenMeteoResponse = client.get(BASE_URL) {
             parameter("latitude", location.latitude)
             parameter("longitude", location.longitude)
-            parameter("current", "temperature_2m")
+            parameter("daily", DAILY_PARAMS)
+            parameter("hourly", HOURLY_PARAMS)
             parameter("timezone", "auto")
+            parameter("forecast_days", 16)
         }.body()
 
-        return ForecastResult(
-            source = "open-meteo",
-            location = location.name,
-            temperature = response.current.temperature2m,
-            timeUtc = response.current.time
-        )
+        val forecastTime = LocalDateTime.now()
+
+        val dailyResults = response.daily.time.mapIndexed { index, dateStr ->
+            DailyForecastResult(
+                source = ADAPTER_SOURCE_NAME,
+                location = location,
+                forecastTimeUtc = forecastTime,
+                targetDate = LocalDate.parse(dateStr),
+                temperatureMinC = response.daily.temperatureMin[index],
+                temperatureMaxC = response.daily.temperatureMax[index],
+                temperatureMeanC = response.daily.temperatureMean[index],
+                precipitationMmSum = response.daily.precipitationSum[index],
+                windSpeedKph10mMax = response.daily.windSpeedMax[index]
+            )
+        }
+
+        val hourlyResults = response.hourly.time.mapIndexed { index, datetimeStr ->
+            HourlyForecastResult(
+                source = ADAPTER_SOURCE_NAME,
+                location = location,
+                forecastTimeUtc = forecastTime,
+                targetDateTimeUtc = LocalDateTime.parse(datetimeStr),
+                temperatureC = response.hourly.temperature[index],
+                precipitationMm = response.hourly.precipitation[index],
+                windSpeedKph10m = response.hourly.windSpeed[index]
+            )
+        }
+
+        return dailyResults + hourlyResults
     }
 }
-
-@Serializable
-data class OpenMeteoResponse(
-    val current: Current
-)
-
-@Serializable
-data class Current(
-    @SerialName("temperature_2m")
-    val temperature2m: Double,
-    val time: String
-)

@@ -3,3 +3,4 @@ plugins {
 }
 rootProject.name = "weather-evaluator"
 include("forecast-fetcher")
+include("common")

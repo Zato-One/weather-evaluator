@@ -53,3 +53,10 @@ Start all services + Kafka with Docker Compose:
 
 ```bash
 docker-compose up --build
+
+---
+
+## 💡 Ideas for improvement
+
+- Event messages could be optimized using Protobuf, for binary serialization
+- ForecastGranularity could also have three-hourly and six-hourly, but not every API supports it 
