@@ -14,6 +14,9 @@ repositories {
 }
 
 dependencies {
+    // Project dependencies
+    implementation(project(":common"))
+    
     // Ktor
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
