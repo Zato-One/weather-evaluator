@@ -5,6 +5,7 @@ import cz.savic.weatherevaluator.forecastfetcher.adapter.ForecastProvider
 import cz.savic.weatherevaluator.forecastfetcher.adapter.HourlyForecastResult
 import cz.savic.weatherevaluator.forecastfetcher.event.ForecastEventProducer
 import cz.savic.weatherevaluator.forecastfetcher.model.Location
+import cz.savic.weatherevaluator.forecastfetcher.util.mapping.toEvent
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -28,11 +29,12 @@ class ForecastFetcherService(
 
                     val dailyResults = results.filterIsInstance<DailyForecastResult>()
                     val hourlyResults = results.filterIsInstance<HourlyForecastResult>()
+                    val adapterName = provider.javaClass.simpleName
 
-                    logger.info { "Processed ${dailyResults.size} daily forecasts for ${location.name}" }
-                    logger.info { "Processed ${hourlyResults.size} hourly forecasts for ${location.name}" }
+                    logger.info { "[$adapterName] Processed ${dailyResults.size} daily forecasts for ${location.name}" }
+                    logger.info { "[$adapterName] Processed ${hourlyResults.size} hourly forecasts for ${location.name}" }
                 } catch (ex: Exception) {
-                    logger.error(ex) { "Failed to fetch or send forecast for ${location.name}" }
+                    logger.error(ex) { "Failed to fetch or send forecast for ${location.name} using ${provider.javaClass.simpleName}" }
                 }
             }
         }
