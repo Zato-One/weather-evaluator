@@ -1,4 +1,4 @@
-package cz.savic.weatherevaluator.common.model
+package cz.savic.weatherevaluator.forecastfetcher.model
 
 enum class ForecastGranularity {
     HOURLY,

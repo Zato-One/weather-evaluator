@@ -1,6 +1,8 @@
 package cz.savic.weatherevaluator.forecastfetcher.adapter
 
+import cz.savic.weatherevaluator.forecastfetcher.event.ForecastFetchedEvent
 import cz.savic.weatherevaluator.forecastfetcher.model.Location
+import cz.savic.weatherevaluator.forecastfetcher.util.mapping.toEvent
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -8,6 +10,8 @@ sealed interface ForecastResult {
     val source: String
     val location: Location
     val forecastTimeUtc: LocalDateTime
+    
+    fun toEvent(): ForecastFetchedEvent = toEvent(this)
 }
 
 data class DailyForecastResult(
@@ -21,7 +25,6 @@ data class DailyForecastResult(
     val precipitationMmSum: Double,
     val windSpeedKph10mMax: Double
 ) : ForecastResult
-
 
 data class HourlyForecastResult(
     override val source: String,

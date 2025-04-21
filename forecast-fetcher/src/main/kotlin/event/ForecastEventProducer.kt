@@ -6,6 +6,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.producer.ProducerRecord
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 
 class ForecastEventProducer(
     private val kafkaProducer: Producer<String, String>,
@@ -27,8 +29,10 @@ class ForecastEventProducer(
         kafkaProducer.send(record) { metadata, exception ->
             if (exception != null) {
                 logger.error(exception) { "Failed to send forecast event for ${event.location.name}" }
+            } else if (logger.isTraceEnabled()) {
+                logger.trace { "Sent forecast event $event to ${metadata.topic()} [${metadata.partition()}]" }
             } else {
-                logger.info { "Sent forecast event for ${event.location.name} to ${metadata.topic()} [${metadata.partition()}]" }
+                logger.info { "Sent forecast event for ${event.location.name}" }
             }
         }
     }
