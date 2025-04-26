@@ -1,7 +1,7 @@
 package cz.savic.weatherevaluator.forecastfetcher.adapter
 
 import cz.savic.weatherevaluator.common.model.ForecastGranularity
-import cz.savic.weatherevaluator.forecastfetcher.model.*
+import cz.savic.weatherevaluator.common.model.*
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.call.*

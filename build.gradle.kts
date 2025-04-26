@@ -7,6 +7,8 @@ version = "1.0-SNAPSHOT"
 
 val ktorVersion by extra("3.1.2")
 val hopliteVersion by extra("2.9.0")
+val mybatisVersion by extra("3.5.16")
+val oracleDriverVersion by extra("23.3.0.23.09")
 
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
@@ -67,6 +69,39 @@ tasks.register("listKafkaTopics") {
     doLast {
         exec {
             commandLine("wsl", "docker", "exec", "kafka", "kafka-topics.sh", "--bootstrap-server", "localhost:9092", "--list")
+        }
+    }
+}
+
+tasks.register("startOracle") {
+    group = "docker"
+    description = "Run only Oracle DB by docker-compose.oracle.yml in WSL in detached mode"
+
+    doLast {
+        exec {
+            commandLine("wsl", "docker-compose", "-f", "docker-compose.oracle.yml", "up", "-d", "--remove-orphans")
+        }
+    }
+}
+
+tasks.register("stopOracle") {
+    group = "docker"
+    description = "Stop and remove Oracle DB container"
+
+    doLast {
+        exec {
+            commandLine("wsl", "docker-compose", "-f", "docker-compose.oracle.yml", "down")
+        }
+    }
+}
+
+tasks.register("viewOracleLogs") {
+    group = "docker"
+    description = "Tail logs from Oracle DB container"
+
+    doLast {
+        exec {
+            commandLine("wsl", "docker", "logs", "-f", "oracle")
         }
     }
 }

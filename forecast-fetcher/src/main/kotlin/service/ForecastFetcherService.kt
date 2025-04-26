@@ -1,10 +1,10 @@
 package cz.savic.weatherevaluator.forecastfetcher.service
 
+import cz.savic.weatherevaluator.common.model.Location
 import cz.savic.weatherevaluator.forecastfetcher.adapter.DailyForecastResult
 import cz.savic.weatherevaluator.forecastfetcher.adapter.ForecastProvider
 import cz.savic.weatherevaluator.forecastfetcher.adapter.HourlyForecastResult
-import cz.savic.weatherevaluator.forecastfetcher.event.ForecastEventProducer
-import cz.savic.weatherevaluator.forecastfetcher.model.Location
+import cz.savic.weatherevaluator.forecastfetcher.kafka.ForecastEventProducer
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

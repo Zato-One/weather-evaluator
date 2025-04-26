@@ -1,6 +1,7 @@
-package cz.savic.weatherevaluator.forecastfetcher.event
+package cz.savic.weatherevaluator.common.event
 
-import cz.savic.weatherevaluator.forecastfetcher.model.Location
+import cz.savic.weatherevaluator.common.model.ForecastGranularity
+import cz.savic.weatherevaluator.common.model.Location
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
@@ -8,13 +9,17 @@ import java.time.LocalDateTime
 
 @Serializable
 sealed interface ForecastFetchedEvent {
+    val granularity: ForecastGranularity
     val source: String
-    @Contextual val location: Location
-    @Contextual val forecastTimeUtc: LocalDateTime
+    @Contextual
+    val location: Location
+    @Contextual
+    val forecastTimeUtc: LocalDateTime
 }
 
 @Serializable
 data class DailyForecastFetchedEvent(
+    override val granularity: ForecastGranularity = ForecastGranularity.DAILY,
     override val source: String,
     @Contextual override val location: Location,
     @Contextual override val forecastTimeUtc: LocalDateTime,
@@ -28,6 +33,7 @@ data class DailyForecastFetchedEvent(
 
 @Serializable
 data class HourlyForecastFetchedEvent(
+    override val granularity: ForecastGranularity = ForecastGranularity.HOURLY,
     override val source: String,
     @Contextual override val location: Location,
     @Contextual override val forecastTimeUtc: LocalDateTime,

@@ -6,8 +6,9 @@ plugins {
 
 group = "cz.savic.weatherevaluator"
 
-val ktorVersion: String by rootProject.extra
 val hopliteVersion: String by rootProject.extra
+val mybatisVersion: String by rootProject.extra
+val oracleDriverVersion: String by rootProject.extra
 
 repositories {
     mavenCentral()
@@ -17,14 +18,9 @@ dependencies {
     // Project dependencies
     implementation(project(":common"))
     
-    // Ktor
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
-    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-
-    // kotlinx serialization
+    // kotlinx
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 
     // Logging
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.6")
@@ -36,7 +32,11 @@ dependencies {
 
     // Kafka
     implementation("org.apache.kafka:kafka-clients:4.0.0")
-
+    
+    // Database
+    implementation("org.mybatis:mybatis:$mybatisVersion")
+    implementation("com.oracle.database.jdbc:ojdbc11:$oracleDriverVersion")
+    
     // Test
     testImplementation(kotlin("test"))
 }
@@ -50,9 +50,9 @@ kotlin {
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
-    archiveFileName.set("forecast-fetcher.jar")
+    archiveFileName.set("forecast-writer.jar")
     manifest {
-        attributes["Main-Class"] = "cz.savic.weatherevaluator.forecastfetcher.MainKt"
+        attributes["Main-Class"] = "cz.savic.weatherevaluator.forecastwriter.MainKt"
     }
 }
 

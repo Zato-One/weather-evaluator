@@ -1,7 +1,7 @@
 package cz.savic.weatherevaluator.forecastfetcher.adapter
 
-import cz.savic.weatherevaluator.forecastfetcher.event.ForecastFetchedEvent
-import cz.savic.weatherevaluator.forecastfetcher.model.Location
+import cz.savic.weatherevaluator.common.event.ForecastFetchedEvent
+import cz.savic.weatherevaluator.common.model.Location
 import cz.savic.weatherevaluator.forecastfetcher.util.mapping.toEvent
 import java.time.LocalDate
 import java.time.LocalDateTime

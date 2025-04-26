@@ -1,11 +1,11 @@
 package cz.savic.weatherevaluator.forecastfetcher.util.mapping
 
+import cz.savic.weatherevaluator.common.event.DailyForecastFetchedEvent
+import cz.savic.weatherevaluator.common.event.ForecastFetchedEvent
+import cz.savic.weatherevaluator.common.event.HourlyForecastFetchedEvent
 import cz.savic.weatherevaluator.forecastfetcher.adapter.DailyForecastResult
 import cz.savic.weatherevaluator.forecastfetcher.adapter.ForecastResult
 import cz.savic.weatherevaluator.forecastfetcher.adapter.HourlyForecastResult
-import cz.savic.weatherevaluator.forecastfetcher.event.DailyForecastFetchedEvent
-import cz.savic.weatherevaluator.forecastfetcher.event.ForecastFetchedEvent
-import cz.savic.weatherevaluator.forecastfetcher.event.HourlyForecastFetchedEvent
 
 fun toEvent(result: ForecastResult): ForecastFetchedEvent = when (result) {
     is DailyForecastResult -> result.toDailyEvent()

@@ -5,8 +5,8 @@ import cz.savic.weatherevaluator.forecastfetcher.adapter.OpenMeteoAdapter
 import cz.savic.weatherevaluator.forecastfetcher.adapter.WeatherApiAdapter
 import cz.savic.weatherevaluator.forecastfetcher.config.SecretLoader
 import cz.savic.weatherevaluator.forecastfetcher.config.loadConfig
-import cz.savic.weatherevaluator.forecastfetcher.event.ForecastEventProducer
-import cz.savic.weatherevaluator.forecastfetcher.event.createKafkaProducer
+import cz.savic.weatherevaluator.forecastfetcher.kafka.ForecastEventProducer
+import cz.savic.weatherevaluator.forecastfetcher.kafka.createKafkaProducer
 import cz.savic.weatherevaluator.forecastfetcher.service.ForecastFetcherService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
@@ -24,7 +24,6 @@ suspend fun main() = coroutineScope {
     logger.info { "Starting forecast-fetcher..." }
 
     val config = loadConfig()
-    logger.info { "Loaded config: ${config.locations.size} locations, Kafka topic: ${config.kafka.topic}" }
 
     val client = HttpClient(CIO) {
         install(ContentNegotiation) {
@@ -45,12 +44,12 @@ suspend fun main() = coroutineScope {
     
     logger.info { "Using ${adapters.size} weather providers" }
 
-    val kafkaProducer = createKafkaProducer(config.kafka.bootstrapServers)
-    val eventProducer = ForecastEventProducer(kafkaProducer, config.kafka.topic)
+    val kafkaProducer = createKafkaProducer(config.kafka)
+    val eventProducer = ForecastEventProducer(kafkaProducer, config.kafka)
     
     Runtime.getRuntime().addShutdownHook(Thread {
         logger.info { "Shutting down forecast-fetcher..." }
-        eventProducer.logFinalSummary()
+        eventProducer.logStats()
         kafkaProducer.flush()
         kafkaProducer.close()
         logger.info { "Shutdown completed" }
@@ -71,12 +70,11 @@ suspend fun main() = coroutineScope {
     jobs.awaitAll()
     
     logger.info { "All forecasts fetched, wrapping up..." }
-    eventProducer.logFinalSummary()
-    
+    eventProducer.logStats()
     kafkaProducer.flush()
     kafkaProducer.close()
-    
-    logger.info { "Application completed successfully" }
+
+    logger.info { "Service forecast-fetcher finished" }
 }
 
 private fun createOpenMeteoAdapter(client: HttpClient): ForecastProvider {
