@@ -9,7 +9,8 @@
 Distributed microservices system for evaluating the accuracy of weather forecasts from multiple public APIs.  
 Built with Kotlin, Kafka, and an event-driven architecture.
 
-This project is created purely for educational purposes, aimed at experimenting with and demonstrating various technologies.
+This project is created purely for educational purposes, aimed at experimenting with and demonstrating various
+technologies.
 
 ---
 
@@ -35,14 +36,14 @@ Services communicate asynchronously via Kafka.
 
 ### *(Optional extensions)*
 
-| Service              | Description |
-|----------------------|-------------|
-| **accuracy-writer**  | Alternative design: forecast-evaluator emits accuracy events to Kafka, and this service writes them to the database. |
-| **alert-service**    | Sends notifications if forecast sources become unreliable based on accuracy trends. |
-| **metrics-service**  | Collects system and service health metrics for observability. |
-| **report-service**   | Generates detailed reports on forecast performance and weather trends. |
-| **dashboard-frontend** | User-facing frontend to visualize forecasts, accuracies, and reports. |
-| **api-gateway**      | Central entry point for external consumers, routing requests to internal APIs (e.g. accuracy-api). |
+| Service                | Description                                                                                                          |
+|------------------------|----------------------------------------------------------------------------------------------------------------------|
+| **accuracy-writer**    | Alternative design: forecast-evaluator emits accuracy events to Kafka, and this service writes them to the database. |
+| **alert-service**      | Sends notifications if forecast sources become unreliable based on accuracy trends.                                  |
+| **metrics-service**    | Collects system and service health metrics for observability.                                                        |
+| **report-service**     | Generates detailed reports on forecast performance and weather trends.                                               |
+| **dashboard-frontend** | User-facing frontend to visualize forecasts, accuracies, and reports.                                                |
+| **api-gateway**        | Central entry point for external consumers, routing requests to internal APIs (e.g. accuracy-api).                   |
 
 ---
 

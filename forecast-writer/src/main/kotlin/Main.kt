@@ -4,10 +4,11 @@ import cz.savic.weatherevaluator.forecastwriter.config.loadConfig
 import cz.savic.weatherevaluator.forecastwriter.kafka.ForecastEventConsumer
 import cz.savic.weatherevaluator.forecastwriter.kafka.createKafkaConsumer
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.delay
 
 private val logger = KotlinLogging.logger {}
 
-fun main() {
+suspend fun main() {
     logger.info { "Starting forecast-writer..." }
 
     val config = loadConfig()
@@ -27,7 +28,7 @@ fun main() {
     // TODO poll periodically
     forecastEventConsumer.poll { event ->
         // TODO remove this log and pass events to the service when it's implemented
-        logger.info { "Received forecast event: $event" }
+        logger.trace { "Received forecast event: $event" }
     }
 
     logger.info { "All forecasts processed, wrapping up..." }

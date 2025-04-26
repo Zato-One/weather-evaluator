@@ -25,6 +25,8 @@ class ForecastEventConsumer(
     private val processedHourly = AtomicInteger(0)
 
     fun poll(callback: (ForecastFetchedEvent) -> Unit) {
+        waitForAssignment()
+
         kafkaConsumer.poll(Duration.ofMillis(config.pollTimeoutMs)).forEach { record ->
             try {
                 val event = parseForecastEvent(record.value())
@@ -39,6 +41,12 @@ class ForecastEventConsumer(
             } catch (e: Exception) {
                 logger.error(e) { "Error processing Kafka record: ${record.value()}" }
             }
+        }
+    }
+
+    fun waitForAssignment() {
+        while (kafkaConsumer.assignment().isEmpty()) {
+            kafkaConsumer.poll(Duration.ofMillis(100))
         }
     }
 

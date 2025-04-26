@@ -35,7 +35,7 @@ tasks.register("startKafka") {
 
     doLast {
         exec {
-            commandLine("wsl", "docker-compose", "-f", "docker-compose.kafka.yml", "up", "-d", "--remove-orphans")
+            commandLine("wsl", "docker-compose", "-p", "kafka-stack", "-f", "docker-compose.kafka.yml", "up", "-d", "--remove-orphans")
         }
     }
 }
@@ -79,7 +79,7 @@ tasks.register("startOracle") {
 
     doLast {
         exec {
-            commandLine("wsl", "docker-compose", "-f", "docker-compose.oracle.yml", "up", "-d", "--remove-orphans")
+            commandLine("wsl", "docker-compose", "-p", "oracle-stack", "-f", "docker-compose.oracle.yml", "up", "-d", "--remove-orphans")
         }
     }
 }
