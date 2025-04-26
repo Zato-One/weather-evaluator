@@ -24,14 +24,25 @@ Services communicate asynchronously via Kafka.
 
 ## 🔧 Microservices
 
-| Service                | Description |
-|------------------------|-------------|
-| **forecast-fetcher**   | Periodically fetches weather forecasts for defined locations from a single API (e.g. OpenMeteo). Publishes `ForecastFetchedEvent` to Kafka. |
-| **forecast-collector** | Listens to forecast events and stores them in a database. |
-| **weather-observer**   | Collects real weather observations (what actually happened). Publishes `WeatherObservedEvent`. |
-| **forecast-evaluator** | Compares past forecasts with actual weather to calculate prediction accuracy. |
-| **stats-api**          | Provides aggregated statistics and forecast accuracy reports via REST API. |
-| *(optional)* **notification-service** | Sends alerts if forecast sources become unreliable. |
+| Service                    | Description                                                                                                                                                                   |
+|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **forecast-fetcher**       | Periodically fetches weather forecasts (daily/hourly) for defined locations from various public APIs (e.g. OpenMeteo, WeatherAPI). Publishes `ForecastFetchedEvent` to Kafka. |
+| **forecast-writer**        | Listens to forecast events from Kafka and stores them in a database.                                                                                                          |
+| **actual-weather-fetcher** | Periodically collects real weather observations (current weather) from APIs. Publishes `WeatherObservedEvent` to Kafka.                                                       |
+| **actual-weather-writer**  | Listens to observation events and stores them in a database.                                                                                                                  |
+| **forecast-evaluator**     | Compares stored forecasts with actual weather data to calculate prediction accuracy. Reads and writes directly to the database (no Kafka).                                    |
+| **accuracy-api**           | Provides aggregated statistics and forecast accuracy reports prepared by forecast-evaluator via REST API.                                                                     |
+
+### *(Optional extensions)*
+
+| Service              | Description |
+|----------------------|-------------|
+| **accuracy-writer**  | Alternative design: forecast-evaluator emits accuracy events to Kafka, and this service writes them to the database. |
+| **alert-service**    | Sends notifications if forecast sources become unreliable based on accuracy trends. |
+| **metrics-service**  | Collects system and service health metrics for observability. |
+| **report-service**   | Generates detailed reports on forecast performance and weather trends. |
+| **dashboard-frontend** | User-facing frontend to visualize forecasts, accuracies, and reports. |
+| **api-gateway**      | Central entry point for external consumers, routing requests to internal APIs (e.g. accuracy-api). |
 
 ---
 
@@ -53,6 +64,7 @@ Start all services + Kafka with Docker Compose:
 
 ```bash
 docker-compose up --build
+```
 
 ---
 
