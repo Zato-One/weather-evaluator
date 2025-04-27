@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="forecast-writer" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="cz.savic.weatherevaluator.forecastwriter.MainKt" />
+    <module name="weather-evaluator.forecast-writer.main" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
