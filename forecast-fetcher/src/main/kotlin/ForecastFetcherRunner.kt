@@ -17,10 +17,12 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.serialization.json.Json
+import java.util.concurrent.atomic.AtomicBoolean
 
 class ForecastFetcherRunner : AutoCloseable {
     private val logger = KotlinLogging.logger {}
     private val config = loadConfig()
+    private val closed = AtomicBoolean(false)
 
     init {
         logger.info { "Starting forecast-fetcher..." }
@@ -55,6 +57,8 @@ class ForecastFetcherRunner : AutoCloseable {
     }
 
     override fun close() {
+        if (closed.getAndSet(true)) return
+
         logger.info { "Closing forecast-fetcher..." }
         eventProducer.logStats()
         kafkaProducer.flush()

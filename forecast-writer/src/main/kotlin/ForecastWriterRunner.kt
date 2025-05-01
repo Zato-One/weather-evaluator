@@ -6,21 +6,19 @@ import cz.savic.weatherevaluator.forecastwriter.kafka.createKafkaConsumer
 import cz.savic.weatherevaluator.forecastwriter.persistence.DatabaseInitializer
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.coroutineScope
+import java.util.concurrent.atomic.AtomicBoolean
 
 class ForecastWriterRunner : AutoCloseable {
     private val logger = KotlinLogging.logger {}
     private val config = loadConfig()
     private val dbInitializer = DatabaseInitializer(config.database)
+    private val closed = AtomicBoolean(false)
 
     init {
         logger.info { "Starting forecast-writer..." }
 
-        if (config.database.initOnStartup) {
-            logger.info { "Initializing database tables..." }
-            dbInitializer.initializeTables()
-        } else {
-            logger.debug { "Database initialization on startup is disabled." }
-        }
+        logger.info { "Running Liquibase migrations..." }
+        dbInitializer.initializeDatabase()
     }
 
     // TODO init service and persistence (DB, MyBatis, ...)
@@ -38,6 +36,8 @@ class ForecastWriterRunner : AutoCloseable {
     // TODO create method to poll periodically (remove pollOnce when it's created or keep it too?)
 
     override fun close() {
+        if (closed.getAndSet(true)) return
+
         logger.info { "Closing forecast-writer..." }
         eventConsumer.logStats()
         kafkaConsumer.close()

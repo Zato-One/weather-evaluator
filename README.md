@@ -72,3 +72,5 @@ docker-compose up --build
 
 - Event messages could be optimized using Protobuf, for binary serialization
 - ForecastGranularity could also have three-hourly and six-hourly, but not every API supports it 
+- Connection to DB is made using system user by Liquibase which also create a schema. It would be better
+  to have schema pre-created and connect using the app user (DBCHANGELOG is currently created in SYSTEM schema).

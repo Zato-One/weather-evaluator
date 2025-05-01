@@ -6,9 +6,15 @@ plugins {
 
 group = "cz.savic.weatherevaluator"
 
+val kotlinXVersion: String by rootProject.extra
+val oshaiLoggingVersion: String by rootProject.extra
+val julToSlf4jVersion: String by rootProject.extra
+val logbackVersion: String by rootProject.extra
 val hopliteVersion: String by rootProject.extra
-val mybatisVersion: String by rootProject.extra
+val kafkaVersion: String by rootProject.extra
 val oracleDriverVersion: String by rootProject.extra
+val liquibaseVersion: String by rootProject.extra
+val mybatisVersion: String by rootProject.extra
 
 repositories {
     mavenCentral()
@@ -19,24 +25,26 @@ dependencies {
     implementation(project(":common"))
     
     // kotlinx
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.8.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:$kotlinXVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinXVersion")
 
     // Logging
-    implementation("io.github.oshai:kotlin-logging-jvm:7.0.6")
-    runtimeOnly("ch.qos.logback:logback-classic:1.5.18")
+    implementation("io.github.oshai:kotlin-logging-jvm:$oshaiLoggingVersion")
+    implementation("org.slf4j:jul-to-slf4j:$julToSlf4jVersion")
+    runtimeOnly("ch.qos.logback:logback-classic:$logbackVersion")
 
     // Configuration
     implementation("com.sksamuel.hoplite:hoplite-core:$hopliteVersion")
     implementation("com.sksamuel.hoplite:hoplite-hocon:$hopliteVersion")
 
     // Kafka
-    implementation("org.apache.kafka:kafka-clients:4.0.0")
+    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     
     // Database
-    implementation("org.mybatis:mybatis:$mybatisVersion")
     implementation("com.oracle.database.jdbc:ojdbc11:$oracleDriverVersion")
-    
+    implementation("org.liquibase:liquibase-core:$liquibaseVersion")
+    implementation("org.mybatis:mybatis:$mybatisVersion")
+
     // Test
     testImplementation(kotlin("test"))
 }

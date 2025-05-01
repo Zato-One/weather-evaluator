@@ -13,4 +13,5 @@
     <logger name="cz.savic.weatherevaluator.forecastwriter" level="INFO" />
     <logger name="org.apache.kafka" level="WARN" />
     <logger name="org.mybatis" level="WARN" />
+    <logger name="liquibase" level="WARN"/>
 </configuration>

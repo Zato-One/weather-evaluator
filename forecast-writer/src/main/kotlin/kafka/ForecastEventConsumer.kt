@@ -63,15 +63,13 @@ class ForecastEventConsumer(
     }
 
     fun logStats() {
-        val count = processedCount.getAndSet(0)
-        if (count > 0) {
-            logger.info {
-                "Processed forecast events - Total: $count, " +
-                        "Daily: ${processedDaily.get()}, " +
-                        "Hourly: ${processedHourly.get()}, " +
-                        "since last log"
-            }
+        logger.info {
+            "Processed forecast events - Total: ${processedCount.get()}, " +
+                    "Daily: ${processedDaily.get()}, " +
+                    "Hourly: ${processedHourly.get()}, " +
+                    "since last log"
         }
+        processedCount.set(0)
         processedDaily.set(0)
         processedHourly.set(0)
     }
