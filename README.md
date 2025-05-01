@@ -52,7 +52,6 @@ Services communicate asynchronously via Kafka.
 - Kotlin
 - Kafka (event bus), in KRaft mode
 - Ktor (HTTP client)
-- kotlinx.serialization
 - Hoplite (configuration loading)
 - MyBatis + Oracle DB (persistence)
 - Gradle + Docker

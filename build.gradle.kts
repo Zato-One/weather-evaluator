@@ -8,7 +8,7 @@ version = "1.0-SNAPSHOT"
 val ktorVersion by extra("3.1.2")
 val hopliteVersion by extra("2.9.0")
 val mybatisVersion by extra("3.5.16")
-val oracleDriverVersion by extra("23.3.0.23.09")
+val oracleDriverVersion by extra("23.7.0.25.01")
 
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
