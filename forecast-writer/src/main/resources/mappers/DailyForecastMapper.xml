@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cz.savic.weatherevaluator.forecastwriter.persistence.mappers.DailyForecastMapper">
+    
+    <resultMap id="DailyForecastMap" type="cz.savic.weatherevaluator.forecastwriter.model.DailyForecast">
+        <id property="id" column="id"/>
+        <result property="source" column="source"/>
+        <result property="locationName" column="location_name"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="forecastTimeUtc" column="forecast_time_utc"/>
+        <result property="targetDate" column="target_date"/>
+        <result property="temperatureMinC" column="temperature_min_c"/>
+        <result property="temperatureMaxC" column="temperature_max_c"/>
+        <result property="temperatureMeanC" column="temperature_mean_c"/>
+        <result property="precipitationMmSum" column="precipitation_mm_sum"/>
+        <result property="windSpeedKph10mMax" column="wind_speed_kph_10m_max"/>
+    </resultMap>
+    
+    <insert id="insert" parameterType="cz.savic.weatherevaluator.forecastwriter.model.DailyForecast"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        MERGE INTO forecast_daily target
+        USING (SELECT 
+                #{source} AS source,
+                #{locationName} AS location_name,
+                #{latitude} AS latitude,
+                #{longitude} AS longitude,
+                #{forecastTimeUtc} AS forecast_time_utc,
+                #{targetDate} AS target_date,
+                #{temperatureMinC} AS temperature_min_c,
+                #{temperatureMaxC} AS temperature_max_c,
+                #{temperatureMeanC} AS temperature_mean_c,
+                #{precipitationMmSum} AS precipitation_mm_sum,
+                #{windSpeedKph10mMax} AS wind_speed_kph_10m_max
+               FROM dual) source
+        ON (
+            target.source = source.source AND
+            target.location_name = source.location_name AND
+            target.forecast_time_utc = source.forecast_time_utc AND
+            target.target_date = source.target_date
+        )
+        WHEN MATCHED THEN
+            UPDATE SET
+                target.temperature_min_c = source.temperature_min_c,
+                target.temperature_max_c = source.temperature_max_c,
+                target.temperature_mean_c = source.temperature_mean_c,
+                target.precipitation_mm_sum = source.precipitation_mm_sum,
+                target.wind_speed_kph_10m_max = source.wind_speed_kph_10m_max
+        WHEN NOT MATCHED THEN
+            INSERT (
+                source, location_name, latitude, longitude, forecast_time_utc, target_date,
+                temperature_min_c, temperature_max_c, temperature_mean_c, precipitation_mm_sum, wind_speed_kph_10m_max
+            )
+            VALUES (
+                source.source, source.location_name, source.latitude, source.longitude, source.forecast_time_utc, source.target_date,
+                source.temperature_min_c, source.temperature_max_c, source.temperature_mean_c, source.precipitation_mm_sum, source.wind_speed_kph_10m_max
+            )
+    </insert>
+    
+</mapper>

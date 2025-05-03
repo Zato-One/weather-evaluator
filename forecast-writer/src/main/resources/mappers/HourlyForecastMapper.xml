@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cz.savic.weatherevaluator.forecastwriter.persistence.mappers.HourlyForecastMapper">
+    
+    <resultMap id="HourlyForecastMap" type="cz.savic.weatherevaluator.forecastwriter.model.HourlyForecast">
+        <id property="id" column="id"/>
+        <result property="source" column="source"/>
+        <result property="locationName" column="location_name"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="forecastTimeUtc" column="forecast_time_utc"/>
+        <result property="targetDateTimeUtc" column="target_datetime_utc"/>
+        <result property="temperatureC" column="temperature_c"/>
+        <result property="precipitationMm" column="precipitation_mm"/>
+        <result property="windSpeedKph10m" column="wind_speed_kph_10m"/>
+    </resultMap>
+    
+    <insert id="insert" parameterType="cz.savic.weatherevaluator.forecastwriter.model.HourlyForecast"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        MERGE INTO forecast_hourly target
+        USING (SELECT 
+                #{source} AS source,
+                #{locationName} AS location_name,
+                #{latitude} AS latitude,
+                #{longitude} AS longitude,
+                #{forecastTimeUtc} AS forecast_time_utc,
+                #{targetDateTimeUtc} AS target_datetime_utc,
+                #{temperatureC} AS temperature_c,
+                #{precipitationMm} AS precipitation_mm,
+                #{windSpeedKph10m} AS wind_speed_kph_10m
+               FROM dual) source
+        ON (
+            target.source = source.source AND
+            target.location_name = source.location_name AND
+            target.forecast_time_utc = source.forecast_time_utc AND
+            target.target_datetime_utc = source.target_datetime_utc
+        )
+        WHEN MATCHED THEN
+            UPDATE SET
+                target.temperature_c = source.temperature_c,
+                target.precipitation_mm = source.precipitation_mm,
+                target.wind_speed_kph_10m = source.wind_speed_kph_10m
+        WHEN NOT MATCHED THEN
+            INSERT (
+                source, location_name, latitude, longitude, forecast_time_utc, target_datetime_utc,
+                temperature_c, precipitation_mm, wind_speed_kph_10m
+            )
+            VALUES (
+                source.source, source.location_name, source.latitude, source.longitude, source.forecast_time_utc, source.target_datetime_utc,
+                source.temperature_c, source.precipitation_mm, source.wind_speed_kph_10m
+            )
+    </insert>
+    
+</mapper>
