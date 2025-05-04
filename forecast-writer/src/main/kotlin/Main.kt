@@ -1,13 +1,8 @@
 package cz.savic.weatherevaluator.forecastwriter
 
-import cz.savic.weatherevaluator.forecastwriter.config.loadConfig
-import cz.savic.weatherevaluator.forecastwriter.kafka.ForecastEventConsumer
-import cz.savic.weatherevaluator.forecastwriter.kafka.createKafkaConsumer
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.slf4j.bridge.SLF4JBridgeHandler
-import kotlin.use
 
 private val logger = KotlinLogging.logger {}
 

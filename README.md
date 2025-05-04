@@ -74,3 +74,4 @@ docker-compose up --build
 - ForecastGranularity could also have three-hourly and six-hourly, but not every API supports it 
 - Connection to DB is made using system user by Liquibase which also create a schema. It would be better
   to have schema pre-created and connect using the app user (DBCHANGELOG is currently created in SYSTEM schema).
+- Instead of IGNORE_ROW_ON_DUPKEY_INDEX in ForecastMapper there are some other ways that are not Oracle DB specific. 

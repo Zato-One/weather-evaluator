@@ -2,33 +2,12 @@
 <!DOCTYPE configuration
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
 <configuration>
-    <settings>
-        <setting name="mapUnderscoreToCamelCase" value="true"/>
-        <setting name="useGeneratedKeys" value="true"/>
-    </settings>
-    
-    <typeHandlers>
-        <typeHandler handler="cz.savic.weatherevaluator.forecastwriter.persistence.typehandlers.LocalDateTimeTypeHandler" 
-                     javaType="java.time.LocalDateTime"/>
-        <typeHandler handler="cz.savic.weatherevaluator.forecastwriter.persistence.typehandlers.LocalDateTypeHandler" 
-                     javaType="java.time.LocalDate"/>
-    </typeHandlers>
-    
-    <environments default="development">
-        <environment id="development">
-            <transactionManager type="JDBC"/>
-            <dataSource type="POOLED">
-                <property name="driver" value="oracle.jdbc.OracleDriver"/>
-                <property name="url" value="${oracle.url}"/>
-                <property name="username" value="${oracle.username}"/>
-                <property name="password" value="${oracle.password}"/>
-            </dataSource>
-        </environment>
-    </environments>
-    
+    <typeAliases>
+        <package name="persistence.entity"/>
+    </typeAliases>
     <mappers>
-        <mapper resource="mappers/DailyForecastMapper.xml"/>
-        <mapper resource="mappers/HourlyForecastMapper.xml"/>
+        <mapper resource="mapper/ForecastMapper.xml"/>
     </mappers>
 </configuration>

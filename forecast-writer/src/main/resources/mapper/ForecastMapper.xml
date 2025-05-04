@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cz.savic.weatherevaluator.forecastwriter.persistence.mapper.ForecastMapper">
+
+    <insert id="insertDaily"
+            parameterType="cz.savic.weatherevaluator.forecastwriter.persistence.entity.DailyForecastEntity">
+        INSERT /*+ IGNORE_ROW_ON_DUPKEY_INDEX(forecast_daily, uk_daily_forecast) */
+        INTO forecast_daily (
+        source, location_name, latitude, longitude, forecast_time_utc,
+        target_date, temperature_min_c, temperature_max_c, temperature_mean_c,
+        precipitation_mm_sum, wind_speed_kph_10m_max
+        )
+        VALUES (
+        #{source}, #{locationName}, #{latitude}, #{longitude}, #{forecastTimeUtc},
+        #{targetDate}, #{temperatureMinC}, #{temperatureMaxC}, #{temperatureMeanC},
+        #{precipitationMmSum}, #{windSpeedKph10mMax}
+        )
+    </insert>
+
+    <insert id="insertHourly"
+            parameterType="cz.savic.weatherevaluator.forecastwriter.persistence.entity.HourlyForecastEntity">
+        INSERT /*+ IGNORE_ROW_ON_DUPKEY_INDEX(forecast_hourly, uk_hourly_forecast) */
+        INTO forecast_hourly (
+        source, location_name, latitude, longitude, forecast_time_utc,
+        target_datetime_utc, temperature_c, precipitation_mm, wind_speed_kph_10m
+        )
+        VALUES (
+        #{source}, #{locationName}, #{latitude}, #{longitude}, #{forecastTimeUtc},
+        #{targetDateTime}, #{temperatureC}, #{precipitationMm}, #{windSpeedKph10m}
+        )
+    </insert>
+
+</mapper>
