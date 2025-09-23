@@ -29,7 +29,7 @@
         )
         VALUES (
         #{source}, #{locationName}, #{latitude}, #{longitude}, #{forecastTimeUtc},
-        #{targetDateTime}, #{temperatureC}, #{precipitationMm}, #{windSpeedKph10m}
+        #{targetDateTimeUtc}, #{temperatureC}, #{precipitationMm}, #{windSpeedKph10m}
         )
     </insert>
 

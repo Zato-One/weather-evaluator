@@ -3,7 +3,6 @@
     "allow": [
       "Bash(./gradlew:*)",
       "Bash(docker-compose:*)",
-      "Bash(docker:*)",
       "Bash(test/scripts/test_oracle_user.sh)"
     ],
     "deny": [],

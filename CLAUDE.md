@@ -124,6 +124,7 @@ Key libraries managed in root `build.gradle.kts`:
 - Docker containers use OpenJDK base images
 - Database schema managed via Liquibase migrations
 - Kafka runs in KRaft mode (no Zookeeper)
+- Don't put too many comments in code, just exceptionally when it's really needed.
 
 ### AI Security
 
@@ -131,4 +132,4 @@ Key libraries managed in root `build.gradle.kts`:
   Don't even search or work with these files. If I explicitly state that you should look at one of those files ask for
   confirmation and forget the content and context after this interaction.
 - You are possibly running in sandboxed environment. Do not attempt to run any root commands (like sudo) or access
-  system files. Instead tell me what root commands to run and I will run them for you.
+  system files. Instead, tell me what root commands to run and I will run them for you.
