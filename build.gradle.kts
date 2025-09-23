@@ -47,13 +47,57 @@ tasks.register("buildAndStart") {
     }
 }
 
-tasks.register("stopAll") {
+tasks.register("startInfra") {
     group = "docker"
-    description = "Stop and remove whole stack (Kafka + all microservices)"
+    description = "Start infrastructure (Kafka + Oracle) without services"
 
     doLast {
         exec {
-            commandLine("docker-compose", "-p", "weather-stack", "down")
+            commandLine("docker-compose", "-p", "weather-stack", "up", "-d", "kafka", "oracle")
+        }
+    }
+}
+
+tasks.register("stopServices") {
+    group = "docker"
+    description = "Stop application services (keep infrastructure running)"
+
+    doLast {
+        exec {
+            commandLine("docker-compose", "-p", "weather-stack", "stop", "forecast-fetcher", "forecast-writer")
+        }
+    }
+}
+
+tasks.register("stopInfra") {
+    group = "docker"
+    description = "Stop infrastructure (Kafka + Oracle) but preserve data"
+
+    doLast {
+        exec {
+            commandLine("docker-compose", "-p", "weather-stack", "stop", "kafka", "oracle")
+        }
+    }
+}
+
+tasks.register("stopAll") {
+    group = "docker"
+    description = "Stop all services and infrastructure (preserve data)"
+
+    doLast {
+        exec {
+            commandLine("docker-compose", "-p", "weather-stack", "stop")
+        }
+    }
+}
+
+tasks.register("resetAll") {
+    group = "docker"
+    description = "Stop and remove whole stack including data volumes"
+
+    doLast {
+        exec {
+            commandLine("docker-compose", "-p", "weather-stack", "down", "-v")
         }
     }
 }
