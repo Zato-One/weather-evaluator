@@ -30,7 +30,7 @@ tasks.register("startAll") {
 
     doLast {
         exec {
-            commandLine("docker-compose", "up")
+            commandLine("docker-compose", "-p", "weather-stack", "up")
         }
     }
 }
@@ -42,7 +42,7 @@ tasks.register("buildAndStart") {
 
     doLast {
         exec {
-            commandLine("docker-compose", "up", "--build")
+            commandLine("docker-compose", "-p", "weather-stack", "up", "--build")
         }
     }
 }
@@ -53,7 +53,7 @@ tasks.register("stopAll") {
 
     doLast {
         exec {
-            commandLine("docker-compose", "down")
+            commandLine("docker-compose", "-p", "weather-stack", "down")
         }
     }
 }
