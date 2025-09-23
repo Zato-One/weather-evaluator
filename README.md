@@ -68,6 +68,13 @@ docker-compose up --build
 
 ---
 
+## Oracle Setup – Database User
+
+The `weather_evaluator` user is automatically created using an init script located at `docker/oracle-init/create-user.sql`.
+No need to create the user or schema manually.
+
+---
+
 ## 💡 Ideas for improvement
 
 - Event messages could be optimized using Protobuf, for binary serialization

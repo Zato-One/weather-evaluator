@@ -111,3 +111,15 @@ tasks.register("viewOracleLogs") {
         }
     }
 }
+
+tasks.register("testOracleUser") {
+    group = "test"
+    description =
+        "Runs a full test of Oracle user creation, permissions, and login. Must be run in bash. Before this run cygpath -w /usr/bin/bash to convert path to Windows."
+
+    doLast {
+        exec {
+            commandLine("C:/Program Files/Git/usr/bin/bash.exe", "test/scripts/test_oracle_user.sh")
+        }
+    }
+}
