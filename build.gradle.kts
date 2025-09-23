@@ -30,7 +30,30 @@ tasks.register("startAll") {
 
     doLast {
         exec {
+            commandLine("docker-compose", "up")
+        }
+    }
+}
+
+tasks.register("buildAndStart") {
+    group = "docker"
+    description = "Build and run whole stack (Kafka + all microservices)"
+    dependsOn("startAll")
+
+    doLast {
+        exec {
             commandLine("docker-compose", "up", "--build")
+        }
+    }
+}
+
+tasks.register("stopAll") {
+    group = "docker"
+    description = "Stop and remove whole stack (Kafka + all microservices)"
+
+    doLast {
+        exec {
+            commandLine("docker-compose", "down")
         }
     }
 }
@@ -52,7 +75,7 @@ tasks.register("stopKafka") {
 
     doLast {
         exec {
-            commandLine("docker-compose", "-f", "docker-compose.kafka.yml", "down")
+            commandLine("docker-compose", "-p", "kafka-stack", "-f", "docker-compose.kafka.yml", "down")
         }
     }
 }
@@ -96,7 +119,7 @@ tasks.register("stopOracle") {
 
     doLast {
         exec {
-            commandLine("docker-compose", "-f", "docker-compose.oracle.yml", "down")
+            commandLine("docker-compose", "-p", "oracle-stack", "-f", "docker-compose.oracle.yml", "down")
         }
     }
 }
