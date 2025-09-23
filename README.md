@@ -77,8 +77,9 @@ No need to create the user or schema manually.
 
 ## 💡 Ideas for improvement
 
-- Event messages could be optimized using Protobuf, for binary serialization
-- ForecastGranularity could also have three-hourly and six-hourly, but not every API supports it 
-- Connection to DB is made using system user by Liquibase which also create a schema. It would be better
-  to have schema pre-created and connect using the app user (DBCHANGELOG is currently created in SYSTEM schema).
-- Instead of IGNORE_ROW_ON_DUPKEY_INDEX in ForecastMapper there are some other ways that are not Oracle DB specific. 
+- Event messages could be optimized using Protobuf for binary serialization
+- ForecastGranularity could also have three-hourly and six-hourly, but not every API supports it
+- Replace Oracle-specific `IGNORE_ROW_ON_DUPKEY_INDEX` with database-agnostic upsert solution
+- Add service health checks and monitoring endpoints
+- Implement graceful shutdown handling for long-running message consumption
+- Add retry logic and dead letter queue for failed message processing

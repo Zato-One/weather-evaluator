@@ -1,18 +1,5 @@
 --liquibase formatted sql
 
---changeset savic:001-create-user splitStatements:false endDelimiter:/
---comment Initial changeset for creating user, tables and indexes
-DECLARE
-  v_exists INTEGER;
-BEGIN
-  SELECT COUNT(*) INTO v_exists FROM dba_users WHERE username = 'WEATHER_EVALUATOR';
-  IF v_exists = 0 THEN
-    EXECUTE IMMEDIATE 'CREATE USER weather_evaluator IDENTIFIED BY "weather-evaluator"';
-    EXECUTE IMMEDIATE 'GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO weather_evaluator';
-  END IF;
-END;
-/
-
 --changeset savic:001-use-schema
 ALTER SESSION SET CURRENT_SCHEMA = weather_evaluator;
 
