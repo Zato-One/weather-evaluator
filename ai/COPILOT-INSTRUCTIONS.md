@@ -46,4 +46,4 @@ Weather Evaluator is a distributed microservices system for evaluating weather f
 - Build specific service: `./gradlew :{service}:shadowJar`
 - Start Kafka only: `docker-compose -p kafka-stack -f docker-compose.kafka.yml up -d`
 - Start Oracle only: `docker-compose -p oracle-stack -f docker-compose.oracle.yml up -d`
-- List Kafka topics: `docker exec kafka kafka-topics.sh --bootstrap-server localhost:9092 --list`
+- List Kafka topics: `docker exec kafka kafka-topics.sh --bootstrap-server localhost:19092 --list`

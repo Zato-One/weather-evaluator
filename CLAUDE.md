@@ -60,7 +60,7 @@ docker-compose -p kafka-stack -f docker-compose.kafka.yml up -d
 docker-compose -p oracle-stack -f docker-compose.oracle.yml up -d
 
 # View Kafka topics
-docker exec kafka kafka-topics.sh --bootstrap-server localhost:9092 --list
+docker exec kafka kafka-topics.sh --bootstrap-server localhost:19092 --list
 
 # View logs
 docker logs -f kafka

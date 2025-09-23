@@ -97,7 +97,7 @@ tasks.register("listKafkaTopics") {
 
     doLast {
         exec {
-            commandLine("docker", "exec", "kafka", "kafka-topics.sh", "--bootstrap-server", "localhost:9092", "--list")
+            commandLine("docker", "exec", "kafka", "kafka-topics.sh", "--bootstrap-server", "localhost:19092", "--list")
         }
     }
 }
