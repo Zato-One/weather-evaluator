@@ -3,7 +3,9 @@
     "allow": [
       "Bash(./gradlew:*)",
       "Bash(docker-compose:*)",
-      "Bash(test/scripts/test_oracle_user.sh)"
+      "Bash(test/scripts/test_oracle_user.sh)",
+      "WebFetch(domain:open-meteo.com)",
+      "WebFetch(domain:www.weatherapi.com)"
     ],
     "deny": [],
     "ask": []
