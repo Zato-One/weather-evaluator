@@ -75,6 +75,17 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     command: [ "java", "-jar", "actual-weather-fetcher.jar" ]
 
+  actual-weather-writer:
+    build:
+      context: .
+      dockerfile: actual-weather-writer/Dockerfile
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    command: [ "java", "-jar", "actual-weather-writer.jar" ]
+
 volumes:
   kafka_data:
   oracle_data:

@@ -21,7 +21,9 @@ APIs. Built with Kotlin, Kafka, and event-driven architecture.
 - `common/` - Shared models, events, and utilities
 - `forecast-fetcher/` - Fetches forecasts from weather APIs (OpenMeteo, WeatherAPI)
 - `forecast-writer/` - Consumes forecast events and persists to database
-- Additional planned services: actual-weather-fetcher, forecast-evaluator, accuracy-api
+- `actual-weather-fetcher/` - Fetches current weather observations from APIs
+- `actual-weather-writer/` - Consumes weather observed events and persists to database
+- Additional planned services: forecast-evaluator, accuracy-api
 
 ## Development Commands
 

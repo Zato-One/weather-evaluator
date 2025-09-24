@@ -45,9 +45,9 @@ class ActualWeatherWriterRunner : AutoCloseable {
 
     private val actualWeatherPersistenceService = ActualWeatherPersistenceService(sqlSessionFactory)
 
-    private val batchProcessor = ActualWeatherBatchProcessor { events ->
-        actualWeatherPersistenceService.persistBatch(events)
-    }
+    private val batchProcessor = ActualWeatherBatchProcessor(
+        persistFunc = { events -> actualWeatherPersistenceService.persistBatch(events) }
+    )
 
     private val kafkaConsumer = createKafkaConsumer(config.kafka)
     private val eventConsumer = ActualWeatherEventConsumer(kafkaConsumer, config.kafka)
