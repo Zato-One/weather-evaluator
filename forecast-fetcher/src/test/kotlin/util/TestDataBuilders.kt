@@ -1,5 +1,7 @@
 package cz.savic.weatherevaluator.forecastfetcher.util
 
+import cz.savic.weatherevaluator.common.event.DailyForecastFetchedEvent
+import cz.savic.weatherevaluator.common.event.HourlyForecastFetchedEvent
 import cz.savic.weatherevaluator.common.model.Location
 import cz.savic.weatherevaluator.forecastfetcher.adapter.DailyForecastResult
 import cz.savic.weatherevaluator.forecastfetcher.adapter.HourlyForecastResult
@@ -45,6 +47,46 @@ object TestDataBuilders {
         precipitationMm: Double = 0.0,
         windSpeedKph10m: Double = 10.2
     ): HourlyForecastResult = HourlyForecastResult(
+        source = source,
+        location = location,
+        forecastTimeUtc = forecastTimeUtc,
+        targetDateTimeUtc = targetDateTimeUtc,
+        temperatureC = temperatureC,
+        precipitationMm = precipitationMm,
+        windSpeedKph10m = windSpeedKph10m
+    )
+
+    fun createDailyForecastEvent(
+        source: String = "test-source",
+        location: Location = createTestLocation(),
+        forecastTimeUtc: LocalDateTime = LocalDateTime.now(),
+        targetDate: LocalDate = LocalDate.now().plusDays(1),
+        temperatureMinC: Double = 2.5,
+        temperatureMaxC: Double = 8.2,
+        temperatureMeanC: Double = 5.3,
+        precipitationMmSum: Double = 0.1,
+        windSpeedKph10mMax: Double = 12.5
+    ): DailyForecastFetchedEvent = DailyForecastFetchedEvent(
+        source = source,
+        location = location,
+        forecastTimeUtc = forecastTimeUtc,
+        targetDate = targetDate,
+        temperatureMinC = temperatureMinC,
+        temperatureMaxC = temperatureMaxC,
+        temperatureMeanC = temperatureMeanC,
+        precipitationMmSum = precipitationMmSum,
+        windSpeedKph10mMax = windSpeedKph10mMax
+    )
+
+    fun createHourlyForecastEvent(
+        source: String = "test-source",
+        location: Location = createTestLocation(),
+        forecastTimeUtc: LocalDateTime = LocalDateTime.now(),
+        targetDateTimeUtc: LocalDateTime = LocalDateTime.now().plusHours(1),
+        temperatureC: Double = 5.2,
+        precipitationMm: Double = 0.0,
+        windSpeedKph10m: Double = 10.2
+    ): HourlyForecastFetchedEvent = HourlyForecastFetchedEvent(
         source = source,
         location = location,
         forecastTimeUtc = forecastTimeUtc,

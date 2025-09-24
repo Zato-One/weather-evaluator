@@ -124,7 +124,7 @@ Key libraries managed in root `build.gradle.kts`:
 - Docker containers use OpenJDK base images
 - Database schema managed via Liquibase migrations
 - Kafka runs in KRaft mode (no Zookeeper)
-- Don't put too many comments in code, just exceptionally when it's really needed.
+- Avoid comments in code - Write self-explanatory code instead. Only add comments to explain WHY something is done a specific way, never WHAT the code does.
 
 ### AI Security
 
