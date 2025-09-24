@@ -16,7 +16,8 @@ import java.time.format.DateTimeFormatter
 
 class WeatherApiAdapter (
     private val client: HttpClient,
-    private val apiKey: String
+    private val apiKey: String,
+    private val baseUrl: String = "https://api.weatherapi.com"
 ) : ForecastProvider {
 
     private val logger = KotlinLogging.logger {}
@@ -24,7 +25,6 @@ class WeatherApiAdapter (
 
     companion object {
         private const val ADAPTER_SOURCE_NAME = "weather-api"
-        private const val BASE_URL = "https://api.weatherapi.com/v1/forecast.json"
         private val TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
     }
 
@@ -33,7 +33,7 @@ class WeatherApiAdapter (
 
     override suspend fun fetch(location: Location): List<ForecastResult> {
         try {
-            val httpResponse = client.get(BASE_URL) {
+            val httpResponse = client.get("$baseUrl/v1/forecast.json") {
                 parameter("key", apiKey)
                 parameter("q", "${location.latitude},${location.longitude}")
                 parameter("days", 14)

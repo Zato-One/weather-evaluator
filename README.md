@@ -117,7 +117,7 @@ This project demonstrates adherence to microservice and event-driven architectur
 | **Immutability** | Events and data models are immutable data classes with val properties                                                         |
 | **Fail Fast** | Input validation and error handling at service boundaries                                                                     |
 | **Separation of Concerns** | Clear layers: adapters for external APIs, services for business logic, persistence for data                                   |
-| **Test Coverage** | ❌ Minimal test coverage - missing unit/integration tests so far                                                               |
+| **Test Coverage** | ✅ **forecast-fetcher**: Comprehensive coverage (unit, integration, configuration tests) / ❌ **forecast-writer**: Missing test coverage |
 
 **Strengths:**
 - Clean separation of concerns between data fetching and persistence
@@ -129,7 +129,7 @@ This project demonstrates adherence to microservice and event-driven architectur
 - Add health checks and monitoring endpoints for production readiness
 - Implement retry mechanisms with dead letter queues for resilience
 - Add rate limiting for external API calls
-- **Significantly improve test coverage** - Currently minimal testing
+- **Improve forecast-writer test coverage** - Currently missing tests (forecast-fetcher has comprehensive coverage)
 
 ---
 
@@ -142,6 +142,6 @@ This project demonstrates adherence to microservice and event-driven architectur
 - Implement graceful shutdown handling for long-running message consumption
 - Add retry logic and dead letter queue for failed message processing
 - Implement rate limiting for external API calls to prevent quota exhaustion
-- Add comprehensive unit tests for adapters, services, and kafka producers/consumers
-- Add integration tests for full data flow from API to database
+- Add comprehensive unit tests for forecast-writer service (adapters, kafka consumers, database persistence)
+- Add integration tests for forecast-writer data flow from Kafka to database
 - Implement contract testing between services via Kafka events

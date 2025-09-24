@@ -55,7 +55,7 @@ class ApiIntegrationTest {
         )
 
         val httpClient = createTestHttpClient()
-        val adapter = OpenMeteoAdapter(httpClient)
+        val adapter = OpenMeteoAdapter(httpClient, "http://localhost:${wireMockServer.port()}")
         val location = TestDataBuilders.createTestLocation("Prague", 50.0755, 14.4378)
 
         val results = adapter.fetch(location)
@@ -107,7 +107,7 @@ class ApiIntegrationTest {
         )
 
         val httpClient = createTestHttpClient()
-        val adapter = WeatherApiAdapter(httpClient, apiKey)
+        val adapter = WeatherApiAdapter(httpClient, apiKey, "http://localhost:${wireMockServer.port()}")
         val location = TestDataBuilders.createTestLocation("Prague", 50.0755, 14.4378)
 
         val results = adapter.fetch(location)

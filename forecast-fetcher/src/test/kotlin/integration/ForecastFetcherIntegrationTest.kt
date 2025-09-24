@@ -69,8 +69,8 @@ class ForecastFetcherIntegrationTest {
                 )
         )
 
-        val httpClient = createTestHttpClient("http://localhost:${wireMockServer.port()}")
-        val adapter = OpenMeteoAdapter(httpClient)
+        val httpClient = createTestHttpClient()
+        val adapter = OpenMeteoAdapter(httpClient, "http://localhost:${wireMockServer.port()}")
         val kafkaProducer = createKafkaProducer(kafkaConfig)
         val eventProducer = ForecastEventProducer(kafkaProducer, kafkaConfig)
         val service = ForecastFetcherService(adapter, eventProducer)
@@ -99,8 +99,8 @@ class ForecastFetcherIntegrationTest {
                 )
         )
 
-        val httpClient = createTestHttpClient("http://localhost:${wireMockServer.port()}")
-        val adapter = OpenMeteoAdapter(httpClient)
+        val httpClient = createTestHttpClient()
+        val adapter = OpenMeteoAdapter(httpClient, "http://localhost:${wireMockServer.port()}")
         val kafkaProducer = createKafkaProducer(kafkaConfig)
         val eventProducer = ForecastEventProducer(kafkaProducer, kafkaConfig)
         val service = ForecastFetcherService(adapter, eventProducer)
@@ -148,8 +148,8 @@ class ForecastFetcherIntegrationTest {
                 )
         )
 
-        val httpClient = createTestHttpClient("http://localhost:${wireMockServer.port()}")
-        val adapter = OpenMeteoAdapter(httpClient)
+        val httpClient = createTestHttpClient()
+        val adapter = OpenMeteoAdapter(httpClient, "http://localhost:${wireMockServer.port()}")
         val kafkaProducer = createKafkaProducer(kafkaConfig)
         val eventProducer = ForecastEventProducer(kafkaProducer, kafkaConfig)
         val service = ForecastFetcherService(adapter, eventProducer)
@@ -170,7 +170,7 @@ class ForecastFetcherIntegrationTest {
         assertTrue(messages.none { it.contains("Prague") })
     }
 
-    private fun createTestHttpClient(baseUrl: String): HttpClient {
+    private fun createTestHttpClient(): HttpClient {
         return HttpClient(CIO) {
             install(ContentNegotiation) {
                 json(Json {

@@ -14,7 +14,8 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 class OpenMeteoAdapter(
-    private val client: HttpClient
+    private val client: HttpClient,
+    private val baseUrl: String = "https://api.open-meteo.com"
 ) : ForecastProvider {
 
     private val logger = KotlinLogging.logger {}
@@ -22,7 +23,6 @@ class OpenMeteoAdapter(
 
     companion object {
         private const val ADAPTER_SOURCE_NAME = "open-meteo"
-        private const val BASE_URL = "https://api.open-meteo.com/v1/forecast"
         private const val DAILY_PARAMS =
             "temperature_2m_min,temperature_2m_max,temperature_2m_mean,precipitation_sum,wind_speed_10m_max"
         private const val HOURLY_PARAMS =
@@ -34,7 +34,7 @@ class OpenMeteoAdapter(
 
     override suspend fun fetch(location: Location): List<ForecastResult> {
         try {
-            val httpResponse = client.get(BASE_URL) {
+            val httpResponse = client.get("$baseUrl/v1/forecast") {
                 parameter("latitude", location.latitude)
                 parameter("longitude", location.longitude)
                 parameter("daily", DAILY_PARAMS)
