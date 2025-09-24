@@ -49,4 +49,25 @@ class ActualWeatherBatchProcessorTest {
 
         verify(exactly = 0) { mockPersistFunc.invoke(any()) }
     }
+
+    @Test
+    fun `should force process remaining events`() {
+        val mockPersistFunc: (List<WeatherObservedEvent>) -> Unit = mockk(relaxed = true)
+        val processor = ActualWeatherBatchProcessor(mockPersistFunc, batchSize = 10)
+
+        val event = WeatherObservedEvent(
+            source = "TestSource",
+            location = Location("TestLocation", 50.0, 14.0),
+            observedTimeUtc = LocalDateTime.of(2025, 1, 1, 12, 0),
+            temperatureC = 20.0,
+            precipitationMm = 5.0,
+            windSpeedKph10m = 15.0
+        )
+
+        processor.submit(event)
+        verify(exactly = 0) { mockPersistFunc.invoke(any()) }
+
+        processor.forceBatchProcessing()
+        verify(exactly = 1) { mockPersistFunc.invoke(any()) }
+    }
 }

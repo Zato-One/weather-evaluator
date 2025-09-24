@@ -45,9 +45,9 @@ class ForecastWriterRunner : AutoCloseable {
 
     private val forecastPersistenceService = ForecastPersistenceService(sqlSessionFactory)
 
-    private val batchProcessor = ForecastBatchProcessor { events ->
-        forecastPersistenceService.persistBatch(events)
-    }
+    private val batchProcessor = ForecastBatchProcessor(
+        processor = { events -> forecastPersistenceService.persistBatch(events) }
+    )
 
     private val kafkaConsumer = createKafkaConsumer(config.kafka)
     private val eventConsumer = ForecastEventConsumer(kafkaConsumer, config.kafka)
@@ -65,6 +65,7 @@ class ForecastWriterRunner : AutoCloseable {
         if (closed.getAndSet(true)) return
 
         logger.info { "Closing forecast-writer..." }
+        batchProcessor.forceBatchProcessing()
         eventConsumer.logStats()
         kafkaConsumer.close()
         logger.info { "Shutdown completed" }

@@ -2,42 +2,54 @@ package cz.savic.weatherevaluator.actualweatherwriter.persistence.service
 
 import cz.savic.weatherevaluator.common.event.WeatherObservedEvent
 import io.github.oshai.kotlinlogging.KotlinLogging
+import java.time.Duration
+import java.time.Instant
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 
 class ActualWeatherBatchProcessor(
     private val persistFunc: (List<WeatherObservedEvent>) -> Unit,
-    private val batchSize: Int = 100
+    private val batchSize: Int = 50,
+    private val maxBatchTimeMs: Long = 5000
 ) {
     private val logger = KotlinLogging.logger {}
-    private val events = ConcurrentLinkedQueue<WeatherObservedEvent>()
-    private val totalSubmitted = AtomicInteger(0)
+    private val queue = ConcurrentLinkedQueue<WeatherObservedEvent>()
+    private val pendingCount = AtomicInteger(0)
+    private var lastProcessTime = Instant.now()
+    private val lock = Any()
 
     fun submit(event: WeatherObservedEvent) {
-        events.offer(event)
-        totalSubmitted.incrementAndGet()
+        queue.add(event)
 
-        if (events.size >= batchSize) {
+        if (pendingCount.incrementAndGet() >= batchSize ||
+            Duration.between(lastProcessTime, Instant.now()).toMillis() >= maxBatchTimeMs) {
             processBatch()
         }
     }
 
-    private fun processBatch() {
-        val batch = mutableListOf<WeatherObservedEvent>()
-        repeat(batchSize) {
-            val event = events.poll()
-            if (event != null) {
-                batch.add(event)
-            }
+    fun forceBatchProcessing() {
+        if (pendingCount.get() > 0) {
+            processBatch()
+        }
+    }
+
+    private fun processBatch() = synchronized(lock) {
+        val events = mutableListOf<WeatherObservedEvent>()
+        var e: WeatherObservedEvent? = queue.poll()
+
+        while (e != null) {
+            events.add(e)
+            e = queue.poll()
         }
 
-        if (batch.isNotEmpty()) {
+        if (events.isNotEmpty()) {
             try {
-                persistFunc(batch)
-                logger.trace { "Processed batch of ${batch.size} events" }
-            } catch (e: Exception) {
-                logger.error(e) { "Failed to process batch of ${batch.size} events" }
-                throw e
+                persistFunc(events)
+                lastProcessTime = Instant.now()
+                pendingCount.set(0)
+                logger.trace { "Processed batch of ${events.size} events" }
+            } catch (ex: Exception) {
+                logger.error(ex) { "Error processing batch of ${events.size} events" }
             }
         }
     }

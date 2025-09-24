@@ -63,6 +63,7 @@ class ActualWeatherWriterRunner : AutoCloseable {
         if (closed.getAndSet(true)) return
 
         logger.info { "Closing actual-weather-writer..." }
+        batchProcessor.forceBatchProcessing()
         eventConsumer.logStats()
         kafkaConsumer.close()
         logger.info { "Shutdown completed" }

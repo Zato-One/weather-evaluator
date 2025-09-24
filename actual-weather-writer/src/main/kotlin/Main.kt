@@ -1,16 +1,28 @@
 package cz.savic.weatherevaluator.actualweatherwriter
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.runBlocking
+import org.slf4j.bridge.SLF4JBridgeHandler
 
-fun main() {
-    val runner = ActualWeatherWriterRunner()
+private val logger = KotlinLogging.logger {}
 
-    Runtime.getRuntime().addShutdownHook(Thread {
-        println("Shutdown hook triggered...")
-        runner.close()
-    })
+fun main() = runBlocking {
+    setupSlf4jBridgeHandler()
 
-    runBlocking {
+    ActualWeatherWriterRunner().use { runner ->
+        setupShutdownHook(runner)
         runner.pollOnce()
     }
+}
+
+private fun setupSlf4jBridgeHandler() {
+    SLF4JBridgeHandler.removeHandlersForRootLogger()
+    SLF4JBridgeHandler.install()
+}
+
+private fun setupShutdownHook(runner: AutoCloseable) {
+    Runtime.getRuntime().addShutdownHook(Thread {
+        logger.info { "Shutdown hook triggered..." }
+        runner.close()
+    })
 }
