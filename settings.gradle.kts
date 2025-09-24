@@ -5,3 +5,4 @@ rootProject.name = "weather-evaluator"
 include("common")
 include("forecast-fetcher")
 include("forecast-writer")
+include("actual-weather-fetcher")

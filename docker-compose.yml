@@ -64,6 +64,17 @@ services:
       ORACLE_CONNECTION_STRING: jdbc:oracle:thin:@oracle:1521/XEPDB1
     command: [ "java", "-jar", "forecast-writer.jar" ]
 
+  actual-weather-fetcher:
+    build:
+      context: .
+      dockerfile: actual-weather-fetcher/Dockerfile
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    command: [ "java", "-jar", "actual-weather-fetcher.jar" ]
+
 volumes:
   kafka_data:
   oracle_data:
