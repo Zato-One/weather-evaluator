@@ -1,9 +1,9 @@
 --liquibase formatted sql
 
---changeset savic:001-use-schema
+--changeset savic:actual-weather-writer-001-use-schema
 ALTER SESSION SET CURRENT_SCHEMA = weather_evaluator;
 
---changeset savic:001-create-table-actual-weather
+--changeset savic:actual-weather-writer-001-create-table
 CREATE TABLE actual_weather_observations (
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     source VARCHAR2(100) NOT NULL,
@@ -18,6 +18,6 @@ CREATE TABLE actual_weather_observations (
     CONSTRAINT uk_actual_weather UNIQUE (source, location_name, observed_time_utc)
 );
 
---changeset savic:001-create-indexes
+--changeset savic:actual-weather-writer-001-create-indexes
 CREATE INDEX idx_actual_source_location ON actual_weather_observations(source, location_name);
 CREATE INDEX idx_actual_observed_time ON actual_weather_observations(observed_time_utc);
