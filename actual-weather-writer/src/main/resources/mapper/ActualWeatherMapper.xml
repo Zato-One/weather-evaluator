@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cz.savic.weatherevaluator.actualweatherwriter.persistence.mapper.ActualWeatherMapper">
+
+    <insert id="insert" parameterType="ActualWeatherEntity">
+        /*+ IGNORE_ROW_ON_DUPKEY_INDEX(actual_weather_observations, uk_actual_weather) */
+        INSERT INTO actual_weather_observations (
+            source,
+            location_name,
+            latitude,
+            longitude,
+            observed_time_utc,
+            temperature_c,
+            precipitation_mm,
+            wind_speed_kph_10m
+        ) VALUES (
+            #{source},
+            #{locationName},
+            #{latitude},
+            #{longitude},
+            #{observedTimeUtc},
+            #{temperatureC},
+            #{precipitationMm},
+            #{windSpeedKph10m}
+        )
+    </insert>
+
+</mapper>
