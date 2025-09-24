@@ -43,6 +43,10 @@ dependencies {
 
     // Test
     testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinXVersion")
 }
 
 tasks.test {
