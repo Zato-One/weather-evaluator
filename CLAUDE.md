@@ -124,6 +124,13 @@ Key libraries managed in root `build.gradle.kts`:
 - Docker containers use OpenJDK base images
 - Database schema managed via Liquibase migrations
 - Kafka runs in KRaft mode (no Zookeeper)
+
+### Task Execution Guidelines
+
+- Do exactly what is requested - nothing more, nothing less
+- Ask before adding extra features - if you want to do something beyond the specific request, ask first
+- Be efficient - keep processing time minimal by focusing only on the requested task
+- One task at a time - complete the specific request before suggesting or doing anything additional
 - Avoid comments in code - Write self-explanatory code instead. Only add comments to explain WHY something is done a specific way, never WHAT the code does.
 
 ### AI Security
