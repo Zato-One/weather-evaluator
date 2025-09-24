@@ -40,6 +40,10 @@ dependencies {
     implementation("org.mybatis:mybatis:$mybatisVersion")
 
     testImplementation(kotlin("test"))
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("org.testcontainers:junit-jupiter:1.19.3")
+    testImplementation("org.testcontainers:kafka:1.19.3")
+    testImplementation("org.testcontainers:oracle-xe:1.19.3")
 }
 
 tasks.test {
