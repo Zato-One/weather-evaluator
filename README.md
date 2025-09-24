@@ -136,7 +136,7 @@ This project demonstrates adherence to microservice and event-driven architectur
 ## 💡 Ideas for improvement
 
 - Event messages could be optimized using Protobuf for binary serialization
-- ForecastGranularity could also have three-hourly and six-hourly, but not every API supports it
+- ForecastGranularity currently supports HOURLY and DAILY forecasts. Additional granularities like THREE_HOURLY, SIX_HOURLY, and WEEKLY could be added, but not all weather API sources provide these granularities
 - Replace Oracle-specific `IGNORE_ROW_ON_DUPKEY_INDEX` with database-agnostic upsert solution
 - Add service health checks and monitoring endpoints
 - Implement graceful shutdown handling for long-running message consumption
