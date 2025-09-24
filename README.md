@@ -75,6 +75,64 @@ No need to create the user or schema manually.
 
 ---
 
+## 🏗️ Architecture Principles Compliance
+
+This project demonstrates adherence to microservice and event-driven architecture principles:
+
+### Microservice Architecture ✅
+
+| Principle | Implementation |
+|-----------|----------------|
+| **Single Responsibility** | Each service has one clear purpose (forecast-fetcher gets data, forecast-writer persists it) |
+| **Decentralization** | Independent services with own configuration, no shared databases |
+| **API First** | Well-defined interfaces (`ForecastProvider`, Kafka events) |
+| **Failure Isolation** | Service failures don't cascade (adapter failures isolated in forecast-fetcher) |
+| **Technology Independence** | Each service uses optimal tech stack (Ktor for HTTP, MyBatis for DB) |
+| **Team Ownership** | Clear service boundaries with individual build configs and documentation |
+
+### Event-Driven Architecture ✅
+
+| Principle | Implementation |
+|-----------|----------------|
+| **Loose Coupling** | Services communicate only through Kafka events, no direct dependencies |
+| **Asynchronous Communication** | Fire-and-forget messaging via Kafka producers/consumers |
+| **Event Immutability** | Events are immutable data classes, never modified after creation |
+| **Choreography** | Decentralized event flow, no central orchestrator |
+| **Eventual Consistency** | Data consistency achieved through event processing |
+| **Producer Independence** | Services run independently, don't know about consumers |
+
+### Development Principles ✅
+
+| Principle | Implementation                                                                                                                |
+|-----------|-------------------------------------------------------------------------------------------------------------------------------|
+| **SOLID - Single Responsibility** | Each class has one clear purpose (ForecastFetcherService fetches, ForecastEventProducer publishes, ForecastMapper handles DB) |
+| **SOLID - Open/Closed** | ForecastProvider interface allows extending with new weather APIs without modifying existing code                             |
+| **SOLID - Liskov Substitution** | OpenMeteoAdapter and WeatherApiAdapter are interchangeable through ForecastProvider interface                                 |
+| **SOLID - Interface Segregation** | Clean interfaces like ForecastProvider with minimal, focused methods                                                          |
+| **SOLID - Dependency Inversion** | High-level services depend on abstractions (ForecastProvider, ForecastEventProducer)                                          |
+| **DRY (Don't Repeat Yourself)** | Common functionality extracted to shared modules (common events, serializers, configurations)                                 |
+| **KISS (Keep It Simple)** | Straightforward class hierarchies, clear method names, minimal complexity                                                     |
+| **YAGNI (You Aren't Gonna Need It)** | No over-engineering, only implemented features that are currently needed                                                      |
+| **Composition over Inheritance** | Services use composition (ForecastFetcherService contains ForecastProvider) rather than deep inheritance                      |
+| **Immutability** | Events and data models are immutable data classes with val properties                                                         |
+| **Fail Fast** | Input validation and error handling at service boundaries                                                                     |
+| **Separation of Concerns** | Clear layers: adapters for external APIs, services for business logic, persistence for data                                   |
+| **Test Coverage** | ❌ Minimal test coverage - missing unit/integration tests so far                                                               |
+
+**Strengths:**
+- Clean separation of concerns between data fetching and persistence
+- Robust error handling with failure isolation
+- Proper use of domain events for inter-service communication
+- Technology choices aligned with service requirements
+
+**Minor Areas for Enhancement:**
+- Add health checks and monitoring endpoints for production readiness
+- Implement retry mechanisms with dead letter queues for resilience
+- Add rate limiting for external API calls
+- **Significantly improve test coverage** - Currently minimal testing
+
+---
+
 ## 💡 Ideas for improvement
 
 - Event messages could be optimized using Protobuf for binary serialization
@@ -83,3 +141,7 @@ No need to create the user or schema manually.
 - Add service health checks and monitoring endpoints
 - Implement graceful shutdown handling for long-running message consumption
 - Add retry logic and dead letter queue for failed message processing
+- Implement rate limiting for external API calls to prevent quota exhaustion
+- Add comprehensive unit tests for adapters, services, and kafka producers/consumers
+- Add integration tests for full data flow from API to database
+- Implement contract testing between services via Kafka events
