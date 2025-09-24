@@ -127,9 +127,10 @@ Key libraries managed in root `build.gradle.kts`:
 
 ### Task Execution Guidelines
 
-- Do exactly what is requested - nothing more, nothing less
+- **IMPORTANT**: Do exactly what is requested - nothing more, nothing less
+- **STOP** after completing each requested step - wait for explicit instruction to continue
 - Ask before adding extra features - if you want to do something beyond the specific request, ask first
-- Be efficient - keep processing time minimal by focusing only on the requested task
+- Be (token) efficient - minimize unnecessary output by focusing only on the requested task
 - One task at a time - complete the specific request before suggesting or doing anything additional
 - Avoid comments in code - Write self-explanatory code instead. Only add comments to explain WHY something is done a specific way, never WHAT the code does.
 
