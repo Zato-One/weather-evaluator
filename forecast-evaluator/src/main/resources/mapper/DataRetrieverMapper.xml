@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cz.savic.weatherevaluator.forecastevaluator.persistence.mapper.DataRetrieverMapper">
+
+    <!-- Get hourly forecasts ready for processing -->
+    <select id="getReadyHourlyForecasts" resultType="cz.savic.weatherevaluator.forecastevaluator.accuracy.HourlyForecastData">
+        SELECT
+            source,
+            location_name as locationName,
+            latitude,
+            longitude,
+            forecast_time_utc as forecastTime,
+            target_datetime_utc as targetTime,
+            temperature_c as temperature,
+            precipitation_mm as precipitation,
+            wind_speed_kph_10m as windSpeed
+        FROM forecast_hourly
+        WHERE processing_state = 'READY_FOR_PROCESSING'
+        AND ROWNUM &lt;= #{batchSize}
+        ORDER BY forecast_time_utc, target_datetime_utc
+    </select>
+
+    <!-- Get daily forecasts ready for processing -->
+    <select id="getReadyDailyForecasts" resultType="cz.savic.weatherevaluator.forecastevaluator.accuracy.DailyForecastData">
+        SELECT
+            source,
+            location_name as locationName,
+            latitude,
+            longitude,
+            forecast_time_utc as forecastTime,
+            target_date as targetDate,
+            temperature_min_c as temperatureMin,
+            temperature_max_c as temperatureMax,
+            temperature_mean_c as temperatureMean,
+            precipitation_mm_sum as precipitationSum,
+            wind_speed_kph_10m_max as windSpeedMax
+        FROM forecast_daily
+        WHERE processing_state = 'READY_FOR_PROCESSING'
+        AND ROWNUM &lt;= #{batchSize}
+        ORDER BY forecast_time_utc, target_date
+    </select>
+
+    <!-- Get actual weather for specific hour -->
+    <select id="getActualWeatherForHour" resultType="cz.savic.weatherevaluator.forecastevaluator.accuracy.HourlyActualData">
+        SELECT
+            source,
+            location_name as locationName,
+            latitude,
+            longitude,
+            observed_time_utc as observedTime,
+            temperature_c as temperature,
+            precipitation_mm as precipitation,
+            wind_speed_kph_10m as windSpeed
+        FROM actual_weather_observations
+        WHERE location_name = #{locationName}
+        AND TRUNC(observed_time_utc, 'HH24') = TRUNC(#{targetTime}, 'HH24')
+        AND processing_state = 'READY_FOR_PROCESSING'
+        AND ROWNUM = 1
+    </select>
+
+    <!-- Get actual weather for entire day (all hours) -->
+    <select id="getActualWeatherForDay" resultType="cz.savic.weatherevaluator.forecastevaluator.accuracy.HourlyActualData">
+        SELECT
+            source,
+            location_name as locationName,
+            latitude,
+            longitude,
+            observed_time_utc as observedTime,
+            temperature_c as temperature,
+            precipitation_mm as precipitation,
+            wind_speed_kph_10m as windSpeed
+        FROM actual_weather_observations
+        WHERE location_name = #{locationName}
+        AND TRUNC(observed_time_utc) = #{targetDate}
+        AND processing_state = 'READY_FOR_PROCESSING'
+        ORDER BY observed_time_utc
+    </select>
+
+    <!-- Mark single hourly forecast as processed -->
+    <update id="markHourlyForecastProcessed">
+        UPDATE forecast_hourly
+        SET processing_state = 'ACCURACY_PROCESSED'
+        WHERE source = #{source}
+        AND location_name = #{locationName}
+        AND forecast_time_utc = #{forecastTime}
+        AND target_datetime_utc = #{targetTime}
+    </update>
+
+    <!-- Mark single daily forecast as processed -->
+    <update id="markDailyForecastProcessed">
+        UPDATE forecast_daily
+        SET processing_state = 'ACCURACY_PROCESSED'
+        WHERE source = #{source}
+        AND location_name = #{locationName}
+        AND forecast_time_utc = #{forecastTime}
+        AND target_date = #{targetDate}
+    </update>
+
+    <!-- Mark batch of hourly forecasts as processed -->
+    <update id="markHourlyForecastsBatchProcessed">
+        UPDATE forecast_hourly
+        SET processing_state = 'ACCURACY_PROCESSED'
+        WHERE (source, location_name, forecast_time_utc, target_datetime_utc) IN
+        <foreach collection="forecasts" item="forecast" open="(" separator="," close=")">
+            (#{forecast.source}, #{forecast.locationName}, #{forecast.forecastTime}, #{forecast.targetTime})
+        </foreach>
+    </update>
+
+    <!-- Mark batch of daily forecasts as processed -->
+    <update id="markDailyForecastsBatchProcessed">
+        UPDATE forecast_daily
+        SET processing_state = 'ACCURACY_PROCESSED'
+        WHERE (source, location_name, forecast_time_utc, target_date) IN
+        <foreach collection="forecasts" item="forecast" open="(" separator="," close=")">
+            (#{forecast.source}, #{forecast.locationName}, #{forecast.forecastTime}, #{forecast.targetDate})
+        </foreach>
+    </update>
+
+</mapper>

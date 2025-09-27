@@ -1,7 +1,11 @@
 package cz.savic.weatherevaluator.forecastevaluator
 
+import cz.savic.weatherevaluator.forecastevaluator.accuracy.AccuracyCalculator
+import cz.savic.weatherevaluator.forecastevaluator.accuracy.AccuracyProcessor
 import cz.savic.weatherevaluator.forecastevaluator.config.AppConfig
 import cz.savic.weatherevaluator.forecastevaluator.persistence.DatabaseInitializer
+import cz.savic.weatherevaluator.forecastevaluator.persistence.service.AccuracyPersistenceService
+import cz.savic.weatherevaluator.forecastevaluator.persistence.service.DataRetrievalService
 import cz.savic.weatherevaluator.forecastevaluator.validator.DataValidator
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.delay
@@ -24,15 +28,31 @@ class ForecastEvaluatorRunner {
         val dataValidator = DataValidator(config.database, config.validator)
         logger.info { "Data validator initialized" }
 
+        val sqlSessionFactory = DatabaseInitializer.getSqlSessionFactory()
+        val dataRetrievalService = DataRetrievalService(sqlSessionFactory)
+        val accuracyPersistenceService = AccuracyPersistenceService(sqlSessionFactory)
+        val accuracyCalculator = AccuracyCalculator()
+        val accuracyProcessor = AccuracyProcessor(
+            dataRetrievalService,
+            accuracyPersistenceService,
+            accuracyCalculator,
+            config.validator.batchSize
+        )
+        logger.info { "Accuracy processor initialized" }
+
         try {
             logger.info { "Running single validation cycle..." }
             dataValidator.validateAndUpdateStates()
             logger.info { "Validation cycle completed successfully" }
 
-            // TODO: Add accuracy processor here in future
+            logger.info { "Starting accuracy processing..." }
+            val hourlyResult = accuracyProcessor.processHourlyAccuracy()
+            val dailyResult = accuracyProcessor.processDailyAccuracy()
+
+            logger.info { "Accuracy processing completed - Hourly: $hourlyResult, Daily: $dailyResult" }
 
         } catch (e: Exception) {
-            logger.error(e) { "Error during validation cycle" }
+            logger.error(e) { "Error during processing cycle" }
             throw e
         }
 
@@ -51,8 +71,20 @@ class ForecastEvaluatorRunner {
         val dataValidator = DataValidator(config.database, config.validator)
         logger.info { "Data validator initialized" }
 
+        val sqlSessionFactory = DatabaseInitializer.getSqlSessionFactory()
+        val dataRetrievalService = DataRetrievalService(sqlSessionFactory)
+        val accuracyPersistenceService = AccuracyPersistenceService(sqlSessionFactory)
+        val accuracyCalculator = AccuracyCalculator()
+        val accuracyProcessor = AccuracyProcessor(
+            dataRetrievalService,
+            accuracyPersistenceService,
+            accuracyCalculator,
+            config.validator.batchSize
+        )
+        logger.info { "Accuracy processor initialized" }
+
         running.set(true)
-        logger.info { "Starting validation loop with interval: ${config.validator.intervalMinutes} minutes" }
+        logger.info { "Starting processing loop with interval: ${config.validator.intervalMinutes} minutes" }
 
         while (running.get()) {
             try {
@@ -60,11 +92,14 @@ class ForecastEvaluatorRunner {
                 dataValidator.validateAndUpdateStates()
                 logger.debug { "Validation cycle completed" }
 
-                // TODO: Add accuracy processor here in future
+                logger.debug { "Running accuracy processing..." }
+                val hourlyResult = accuracyProcessor.processHourlyAccuracy()
+                val dailyResult = accuracyProcessor.processDailyAccuracy()
+                logger.debug { "Accuracy processing completed - Hourly: $hourlyResult, Daily: $dailyResult" }
 
                 delay(config.validator.intervalMinutes * 60 * 1000L)
             } catch (e: Exception) {
-                logger.error(e) { "Error during validation cycle" }
+                logger.error(e) { "Error during processing cycle" }
                 delay(30000) // Wait 30 seconds before retry
             }
         }

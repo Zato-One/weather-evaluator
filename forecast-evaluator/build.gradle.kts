@@ -11,6 +11,7 @@ val oshaiLoggingVersion: String by rootProject.extra
 val logbackVersion: String by rootProject.extra
 val hopliteVersion: String by rootProject.extra
 val oracleDriverVersion: String by rootProject.extra
+val mybatisVersion: String by rootProject.extra
 
 repositories {
     mavenCentral()
@@ -34,6 +35,7 @@ dependencies {
 
     // Database
     implementation("com.oracle.database.jdbc:ojdbc11:$oracleDriverVersion")
+    implementation("org.mybatis:mybatis:$mybatisVersion")
 
     // Test
     testImplementation(kotlin("test"))
