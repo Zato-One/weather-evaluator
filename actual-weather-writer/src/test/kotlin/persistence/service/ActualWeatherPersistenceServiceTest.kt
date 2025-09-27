@@ -50,6 +50,6 @@ class ActualWeatherPersistenceServiceTest {
 
         service.persistBatch(emptyList())
 
-        verify(exactly = 0) { mockSessionFactory.openSession(any()) }
+        verify(exactly = 0) { mockSessionFactory.openSession(any<Boolean>()) }
     }
 }
