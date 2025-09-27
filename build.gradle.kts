@@ -189,3 +189,29 @@ tasks.register("testOracleUser") {
         }
     }
 }
+
+tasks.register("clearDatabase") {
+    group = "database"
+    description = "Clear all weather data from database (keeps schema)"
+
+    doLast {
+        exec {
+            commandLine("java", "-cp", project(":test-data-generator").tasks.jar.get().archiveFile.get().asFile.absolutePath,
+                "cz.savic.weatherevaluator.testdatagenerator.DatabaseCleanerKt")
+        }
+    }
+    dependsOn(":test-data-generator:jar")
+}
+
+tasks.register("generateTestData") {
+    group = "data"
+    description = "Generate test weather data for 30 days"
+
+    doLast {
+        exec {
+            commandLine("java", "-cp", project(":test-data-generator").tasks.jar.get().archiveFile.get().asFile.absolutePath,
+                "cz.savic.weatherevaluator.testdatagenerator.TestDataGeneratorMainKt")
+        }
+    }
+    dependsOn("clearDatabase", ":test-data-generator:jar")
+}
