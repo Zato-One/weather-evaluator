@@ -82,9 +82,23 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+      oracle:
+        condition: service_healthy
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      ORACLE_CONNECTION_STRING: jdbc:oracle:thin:@oracle:1521/XEPDB1
     command: [ "java", "-jar", "actual-weather-writer.jar" ]
+
+  forecast-evaluator:
+    build:
+      context: .
+      dockerfile: forecast-evaluator/Dockerfile
+    depends_on:
+      oracle:
+        condition: service_healthy
+    environment:
+      ORACLE_CONNECTION_STRING: jdbc:oracle:thin:@oracle:1521/XEPDB1
+    command: [ "java", "-jar", "forecast-evaluator.jar" ]
 
 volumes:
   kafka_data:

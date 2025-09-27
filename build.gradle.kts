@@ -64,7 +64,7 @@ tasks.register("stopServices") {
 
     doLast {
         exec {
-            commandLine("docker-compose", "-p", "weather-stack", "stop", "forecast-fetcher", "forecast-writer")
+            commandLine("docker-compose", "-p", "weather-stack", "stop", "forecast-fetcher", "forecast-writer", "actual-weather-fetcher", "actual-weather-writer", "forecast-evaluator")
         }
     }
 }
