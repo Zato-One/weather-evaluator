@@ -27,7 +27,7 @@ class WeatherPattern(
         val dailyVariation = 5 * sin(2 * PI * (hourOfDay - 6) / 24.0)
 
         // Random noise
-        val noise = random.nextGaussian() * 2.0
+        val noise = random.nextDouble(-2.0, 2.0)
 
         val temperature = seasonalTemp + dailyVariation + noise
 
@@ -41,7 +41,7 @@ class WeatherPattern(
 
         // Wind speed (correlated with weather activity)
         val baseWind = 5.0 + precipitation * 0.5
-        val windSpeed = maxOf(0.0, baseWind + random.nextGaussian() * 2.0)
+        val windSpeed = maxOf(0.0, baseWind + random.nextDouble(-2.0, 2.0))
 
         return WeatherData(
             temperature = round(temperature * 100) / 100, // 2 decimal places
@@ -65,9 +65,10 @@ class WeatherPattern(
         val accuracy = maxOf(0.1, baseAccuracy - (daysDifference * accuracyDecayPerDay))
 
         // Apply forecast error
-        val tempError = random.nextGaussian() * (1 - accuracy) * 5.0
-        val precipError = random.nextGaussian() * (1 - accuracy) * 2.0
-        val windError = random.nextGaussian() * (1 - accuracy) * 3.0
+        val errorScale = (1 - accuracy)
+        val tempError = random.nextDouble(-1.0, 1.0) * errorScale * 5.0
+        val precipError = random.nextDouble(-1.0, 1.0) * errorScale * 2.0
+        val windError = random.nextDouble(-1.0, 1.0) * errorScale * 3.0
 
         return WeatherData(
             temperature = round((actualWeather.temperature + tempError) * 100) / 100,

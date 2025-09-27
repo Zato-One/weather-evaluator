@@ -195,12 +195,16 @@ tasks.register("clearDatabase") {
     description = "Clear all weather data from database (keeps schema)"
 
     doLast {
+        val testDataGeneratorProject = project(":test-data-generator")
+        val shadowJarTask = testDataGeneratorProject.tasks.named("shadowJar")
+        val jarFile = shadowJarTask.get().outputs.files.singleFile
+
         exec {
-            commandLine("java", "-cp", project(":test-data-generator").tasks.jar.get().archiveFile.get().asFile.absolutePath,
+            commandLine("java", "-cp", jarFile.absolutePath,
                 "cz.savic.weatherevaluator.testdatagenerator.DatabaseCleanerKt")
         }
     }
-    dependsOn(":test-data-generator:jar")
+    dependsOn(":test-data-generator:shadowJar")
 }
 
 tasks.register("generateTestData") {
@@ -208,10 +212,14 @@ tasks.register("generateTestData") {
     description = "Generate test weather data for 30 days"
 
     doLast {
+        val testDataGeneratorProject = project(":test-data-generator")
+        val shadowJarTask = testDataGeneratorProject.tasks.named("shadowJar")
+        val jarFile = shadowJarTask.get().outputs.files.singleFile
+
         exec {
-            commandLine("java", "-cp", project(":test-data-generator").tasks.jar.get().archiveFile.get().asFile.absolutePath,
+            commandLine("java", "-cp", jarFile.absolutePath,
                 "cz.savic.weatherevaluator.testdatagenerator.TestDataGeneratorMainKt")
         }
     }
-    dependsOn("clearDatabase", ":test-data-generator:jar")
+    dependsOn("clearDatabase", ":test-data-generator:shadowJar")
 }
