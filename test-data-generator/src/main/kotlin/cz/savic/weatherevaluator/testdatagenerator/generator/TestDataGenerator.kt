@@ -94,14 +94,21 @@ class TestDataGenerator(
         generationConfig.locations.forEach { locationConfig ->
             val location = locationConfig.toLocation()
 
-            generationConfig.sources.forEach { source ->
+            generationConfig.sources.forEachIndexed { sourceIndex, source ->
+
+                // Different forecast horizons for each source
+                val maxLeadDays = when (sourceIndex) {
+                    0 -> 14   // first source: 14 days
+                    1 -> 3   // second source: 3 days
+                    else -> 2  // third and next sources: 2 days
+                }
 
                 // Generate forecasts for each day
                 var targetDate = generationConfig.startDate
                 while (!targetDate.isAfter(generationConfig.endDate)) {
 
-                    // Generate forecasts with different lead times (1 to 14 days back)
-                    for (leadDays in 1..14) {
+                    // Generate forecasts with different lead times
+                    for (leadDays in 1..maxLeadDays) {
                         val forecastDate = targetDate.minusDays(leadDays.toLong())
 
                         // Only generate forecasts that would have been made during our date range or before

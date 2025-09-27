@@ -26,7 +26,7 @@ data class DatabaseConfig(
 )
 
 data class DataGenerationConfig(
-    val daysBack: Int = 30,
+    val daysBack: Int = 20,
     val baseAccuracy: Double = 0.7,
     val accuracyDecayPerDay: Double = 0.05,
     val randomVariance: Double = 0.15,
@@ -34,8 +34,7 @@ data class DataGenerationConfig(
     val sources: List<String> = listOf("weather-api", "open-meteo", "test-source-1"),
     val locations: List<LocationConfig> = listOf(
         LocationConfig("Prague", 50.0755, 14.4378),
-        LocationConfig("Brno", 49.1951, 16.6068),
-        LocationConfig("Ostrava", 49.8209, 18.2625)
+        LocationConfig("Brno", 49.1951, 16.6068)
     )
 ) {
     val endDate: LocalDate = LocalDate.now().minusDays(1) // Yesterday

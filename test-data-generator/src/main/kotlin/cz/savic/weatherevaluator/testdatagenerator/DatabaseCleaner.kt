@@ -29,7 +29,9 @@ fun clearDatabase(databaseConfig: cz.savic.weatherevaluator.testdatagenerator.co
         val tables = listOf(
             "forecast_daily",
             "forecast_hourly",
-            "actual_weather_observations"
+            "actual_weather_observations",
+            "accuracy_daily",
+            "accuracy_hourly"
         )
 
         tables.forEach { table ->

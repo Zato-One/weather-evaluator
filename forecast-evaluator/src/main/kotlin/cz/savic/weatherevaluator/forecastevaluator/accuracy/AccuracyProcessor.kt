@@ -109,6 +109,7 @@ class AccuracyProcessor(
     private fun processHourlyBatch(forecasts: List<HourlyForecastData>): BatchProcessingResult<HourlyForecastData, HourlyAccuracyResult> {
         val processedForecasts = mutableListOf<HourlyForecastData>()
         val accuracyResults = mutableListOf<HourlyAccuracyResult>()
+        val missingForecasts = mutableListOf<HourlyForecastData>()
         var errors = 0
 
         for (forecast in forecasts) {
@@ -122,18 +123,25 @@ class AccuracyProcessor(
                     val accuracy = accuracyCalculator.calculateHourlyAccuracy(forecast, actualWeather)
                     accuracyResults.add(accuracy)
                     processedForecasts.add(forecast)
-
                 } else {
-                    logger.warn {
-                        "No actual weather data found for hourly forecast: " +
-                        "${forecast.locationName} at ${forecast.targetTime}"
-                    }
+                    missingForecasts.add(forecast)
                     processedForecasts.add(forecast)
                 }
             } catch (e: Exception) {
                 logger.error(e) { "Error processing hourly forecast: ${forecast.locationName} at ${forecast.targetTime}" }
                 errors++
                 processedForecasts.add(forecast)
+            }
+        }
+
+        // Log incomplete days (group missing data by day)
+        if (missingForecasts.isNotEmpty()) {
+            val incompleteDays = missingForecasts
+                .groupBy { "${it.locationName} ${it.targetTime.toLocalDate()}" }
+                .filter { it.value.size >= 3 } // Only log if 3+ hours missing
+
+            incompleteDays.forEach { (dayLocation, missing) ->
+                logger.warn { "Incomplete day: $dayLocation (${missing.size} hours missing)" }
             }
         }
 
