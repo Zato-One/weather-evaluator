@@ -8,7 +8,11 @@ import java.time.LocalDateTime
 import kotlin.math.max
 
 private fun calculateToleranceAccuracy(mae: Double, tolerance: Double): Double {
-    return if (mae <= tolerance) 100.0 else max(0.0, 100.0 - (mae / tolerance * 50.0))
+    return when {
+        mae <= tolerance -> 100.0
+        mae >= tolerance * 3 -> 0.0
+        else -> 100.0 - ((mae - tolerance) / (tolerance * 2) * 100.0)
+    }
 }
 
 data class HourlyAccuracyEntity(
@@ -56,9 +60,9 @@ data class HourlyAccuracyEntity(
                 windSpeedMae = result.windSpeedMae,
                 windSpeedBias = result.windSpeedBias,
 
-                temperatureAccuracyPercent = calculateToleranceAccuracy(result.temperatureMae, 2.0),
-                precipitationAccuracyPercent = calculateToleranceAccuracy(result.precipitationMae, 1.0),
-                windSpeedAccuracyPercent = calculateToleranceAccuracy(result.windSpeedMae, 3.0)
+                temperatureAccuracyPercent = calculateToleranceAccuracy(result.temperatureMae, 3.0),
+                precipitationAccuracyPercent = calculateToleranceAccuracy(result.precipitationMae, 2.0),
+                windSpeedAccuracyPercent = calculateToleranceAccuracy(result.windSpeedMae, 4.0)
             )
         }
     }
@@ -121,11 +125,11 @@ data class DailyAccuracyEntity(
                 windSpeedMae = result.windSpeedMae,
                 windSpeedBias = result.windSpeedBias,
 
-                temperatureMinAccuracyPercent = calculateToleranceAccuracy(result.temperatureMinMae, 2.0),
-                temperatureMaxAccuracyPercent = calculateToleranceAccuracy(result.temperatureMaxMae, 2.0),
-                temperatureMeanAccuracyPercent = calculateToleranceAccuracy(result.temperatureMeanMae, 2.0),
-                precipitationAccuracyPercent = calculateToleranceAccuracy(result.precipitationMae, 2.0),
-                windSpeedAccuracyPercent = calculateToleranceAccuracy(result.windSpeedMae, 3.0)
+                temperatureMinAccuracyPercent = calculateToleranceAccuracy(result.temperatureMinMae, 3.0),
+                temperatureMaxAccuracyPercent = calculateToleranceAccuracy(result.temperatureMaxMae, 3.0),
+                temperatureMeanAccuracyPercent = calculateToleranceAccuracy(result.temperatureMeanMae, 3.0),
+                precipitationAccuracyPercent = calculateToleranceAccuracy(result.precipitationMae, 3.0),
+                windSpeedAccuracyPercent = calculateToleranceAccuracy(result.windSpeedMae, 4.0)
             )
         }
     }
