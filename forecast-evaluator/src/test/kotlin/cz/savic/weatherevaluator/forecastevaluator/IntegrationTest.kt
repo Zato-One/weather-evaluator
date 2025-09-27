@@ -5,6 +5,7 @@ import cz.savic.weatherevaluator.forecastevaluator.config.DatabaseConfig
 import cz.savic.weatherevaluator.forecastevaluator.config.ValidatorConfig
 import cz.savic.weatherevaluator.forecastevaluator.validator.DataValidator
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.sql.Connection
@@ -20,7 +21,7 @@ class IntegrationTest {
     @BeforeEach
     fun setup() {
         val databaseConfig = DatabaseConfig(
-            connectionString = "jdbc:h2:mem:integrationtest;MODE=Oracle;DB_CLOSE_DELAY=-1",
+            connectionString = "jdbc:h2:mem:integrationtest_${System.currentTimeMillis()};MODE=Oracle;DB_CLOSE_DELAY=-1",
             username = "test",
             password = "test"
         )
@@ -42,7 +43,34 @@ class IntegrationTest {
         setupTestSchema()
     }
 
+    @AfterEach
+    fun cleanup() {
+        // Clean up tables for next test
+        try {
+            connection.createStatement().execute("DROP TABLE IF EXISTS forecast_hourly")
+            connection.createStatement().execute("DROP TABLE IF EXISTS actual_weather_observations")
+            connection.createStatement().execute("DROP TABLE IF EXISTS forecast_daily")
+        } catch (e: Exception) {
+            // Ignore cleanup errors
+        }
+
+        try {
+            connection.close()
+        } catch (e: Exception) {
+            // Ignore close errors
+        }
+    }
+
     private fun setupTestSchema() {
+        // Drop tables if they exist (for cleanup)
+        try {
+            connection.createStatement().execute("DROP TABLE IF EXISTS forecast_hourly")
+            connection.createStatement().execute("DROP TABLE IF EXISTS actual_weather_observations")
+            connection.createStatement().execute("DROP TABLE IF EXISTS forecast_daily")
+        } catch (e: Exception) {
+            // Ignore errors if tables don't exist
+        }
+
         // Create test tables similar to real schema
         connection.createStatement().execute("""
             CREATE TABLE forecast_hourly (
