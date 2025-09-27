@@ -10,9 +10,17 @@ fun main() = runBlocking {
 
     try {
         val runner = ForecastEvaluatorRunner()
-        runner.start()
+        setupShutdownHook(runner)
+        runner.runOnce()
     } catch (e: Exception) {
-        logger.error(e) { "Failed to start forecast-evaluator service" }
+        logger.error(e) { "Failed to run forecast-evaluator service" }
         throw e
     }
+}
+
+private fun setupShutdownHook(runner: ForecastEvaluatorRunner) {
+    Runtime.getRuntime().addShutdownHook(Thread {
+        logger.info { "Shutdown hook triggered..." }
+        runner.stop()
+    })
 }
