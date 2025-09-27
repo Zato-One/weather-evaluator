@@ -69,13 +69,14 @@ class DataValidator(
     private fun validateDailyData(connection: java.sql.Connection): Int {
         logger.debug { "Validating daily data with completeness threshold: ${validatorConfig.dailyCompletenessThreshold}/24 hours" }
 
-        // First, find days that have enough actual weather observations
+        // First, find complete days (only closed days - yesterday and older)
         val completeDaysQuery = """
             SELECT DISTINCT
                 location_name,
                 TRUNC(observed_time_utc) as observation_date
             FROM actual_weather_observations
             WHERE processing_state = ?
+            AND TRUNC(observed_time_utc) < TRUNC(CURRENT_DATE)
             GROUP BY location_name, TRUNC(observed_time_utc)
             HAVING COUNT(*) >= ?
         """.trimIndent()
@@ -106,6 +107,7 @@ class DataValidator(
                 WHERE processing_state = ?
                 AND location_name = ?
                 AND target_date = TO_DATE(?, 'YYYY-MM-DD')
+                AND target_date < TRUNC(CURRENT_DATE)
             """.trimIndent()
 
             connection.prepareStatement(readyUpdateSql).use { stmt ->
@@ -120,15 +122,16 @@ class DataValidator(
                 }
                 val readyUpdates = stmt.executeBatch().sum()
                 totalUpdated += readyUpdates
-                logger.debug { "Marked $readyUpdates daily forecasts as READY_FOR_PROCESSING" }
+                logger.debug { "Marked $readyUpdates daily forecasts as READY_FOR_PROCESSING (only closed days)" }
             }
         }
 
-        // Mark incomplete days as INCOMPLETE
+        // Mark incomplete days as INCOMPLETE (only for closed days - yesterday and older)
         val incompleteUpdateSql = """
             UPDATE forecast_daily
             SET processing_state = ?
             WHERE processing_state = ?
+            AND target_date < TRUNC(CURRENT_DATE)
             AND (location_name, target_date) NOT IN (
                 SELECT location_name, TO_DATE(SUBSTR(observation_date, 1, 10), 'YYYY-MM-DD')
                 FROM (
@@ -137,6 +140,7 @@ class DataValidator(
                         TO_CHAR(TRUNC(observed_time_utc), 'YYYY-MM-DD') as observation_date
                     FROM actual_weather_observations
                     WHERE processing_state = ?
+                    AND TRUNC(observed_time_utc) < TRUNC(CURRENT_DATE)
                     GROUP BY location_name, TRUNC(observed_time_utc)
                     HAVING COUNT(*) >= ?
                 )
@@ -150,7 +154,7 @@ class DataValidator(
             stmt.setInt(4, validatorConfig.dailyCompletenessThreshold)
             val incompleteUpdates = stmt.executeUpdate()
             totalUpdated += incompleteUpdates
-            logger.debug { "Marked $incompleteUpdates daily forecasts as INCOMPLETE" }
+            logger.debug { "Marked $incompleteUpdates daily forecasts as INCOMPLETE (only closed days)" }
         }
 
         return totalUpdated
