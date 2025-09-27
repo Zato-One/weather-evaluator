@@ -34,7 +34,7 @@ class AccuracyPersistenceService(private val sqlSessionFactory: SqlSessionFactor
 
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(AccuracyMapper::class.java)
-            mapper.insertHourlyAccuracyBatch(entities)
+            entities.forEach { mapper.insertHourlyAccuracy(it) }
             session.commit()
             logger.info { "Persisted ${entities.size} hourly accuracy records" }
         }
@@ -61,7 +61,7 @@ class AccuracyPersistenceService(private val sqlSessionFactory: SqlSessionFactor
 
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(AccuracyMapper::class.java)
-            mapper.insertDailyAccuracyBatch(entities)
+            entities.forEach { mapper.insertDailyAccuracy(it) }
             session.commit()
             logger.info { "Persisted ${entities.size} daily accuracy records" }
         }

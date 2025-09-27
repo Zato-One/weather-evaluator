@@ -123,10 +123,6 @@ class AccuracyProcessor(
                     accuracyResults.add(accuracy)
                     processedForecasts.add(forecast)
 
-                    logger.debug {
-                        "Calculated hourly accuracy for ${forecast.locationName} at ${forecast.targetTime}: " +
-                        "temp_mae=${accuracy.temperatureMae}, precip_mae=${accuracy.precipitationMae}"
-                    }
                 } else {
                     logger.warn {
                         "No actual weather data found for hourly forecast: " +
@@ -161,10 +157,6 @@ class AccuracyProcessor(
                     accuracyResults.add(accuracy)
                     processedForecasts.add(forecast)
 
-                    logger.debug {
-                        "Calculated daily accuracy for ${forecast.locationName} on ${forecast.targetDate}: " +
-                        "temp_min_mae=${accuracy.temperatureMinMae}, temp_max_mae=${accuracy.temperatureMaxMae}"
-                    }
                 } else {
                     logger.warn {
                         "No actual weather data found for daily forecast: " +

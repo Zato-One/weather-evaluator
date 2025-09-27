@@ -5,7 +5,7 @@
 
     <!-- Insert single hourly accuracy record -->
     <insert id="insertHourlyAccuracy" parameterType="HourlyAccuracyEntity">
-        INSERT /*+ IGNORE_ROW_ON_DUPKEY_INDEX(accuracy_hourly(uk_accuracy_hourly)) */ INTO accuracy_hourly
+        INSERT INTO accuracy_hourly
         (source, location_name, latitude, longitude, forecast_time_utc, target_datetime_utc, forecast_horizon,
          temperature_mae, temperature_bias, precipitation_mae, precipitation_bias, wind_speed_mae, wind_speed_bias)
         VALUES
@@ -15,22 +15,21 @@
 
     <!-- Batch insert hourly accuracy records -->
     <insert id="insertHourlyAccuracyBatch" parameterType="java.util.List">
-        INSERT /*+ IGNORE_ROW_ON_DUPKEY_INDEX(accuracy_hourly(uk_accuracy_hourly)) */ INTO accuracy_hourly
+        INSERT INTO accuracy_hourly
         (source, location_name, latitude, longitude, forecast_time_utc, target_datetime_utc, forecast_horizon,
          temperature_mae, temperature_bias, precipitation_mae, precipitation_bias, wind_speed_mae, wind_speed_bias)
-        <foreach collection="list" item="entity" separator=" UNION ALL ">
-            SELECT
-            #{entity.source}, #{entity.locationName}, #{entity.latitude}, #{entity.longitude},
-            #{entity.forecastTimeUtc}, #{entity.targetDatetimeUtc}, #{entity.forecastHorizon},
-            #{entity.temperatureMae}, #{entity.temperatureBias}, #{entity.precipitationMae},
-            #{entity.precipitationBias}, #{entity.windSpeedMae}, #{entity.windSpeedBias}
-            FROM dual
+        VALUES
+        <foreach collection="list" item="entity" separator=",">
+            (#{entity.source}, #{entity.locationName}, #{entity.latitude}, #{entity.longitude},
+             #{entity.forecastTimeUtc}, #{entity.targetDatetimeUtc}, #{entity.forecastHorizon},
+             #{entity.temperatureMae}, #{entity.temperatureBias}, #{entity.precipitationMae},
+             #{entity.precipitationBias}, #{entity.windSpeedMae}, #{entity.windSpeedBias})
         </foreach>
     </insert>
 
     <!-- Insert single daily accuracy record -->
     <insert id="insertDailyAccuracy" parameterType="DailyAccuracyEntity">
-        INSERT /*+ IGNORE_ROW_ON_DUPKEY_INDEX(accuracy_daily(uk_accuracy_daily)) */ INTO accuracy_daily
+        INSERT INTO accuracy_daily
         (source, location_name, latitude, longitude, forecast_time_utc, target_date, forecast_horizon,
          temperature_min_mae, temperature_max_mae, temperature_mean_mae,
          temperature_min_bias, temperature_max_bias, temperature_mean_bias,
@@ -44,19 +43,18 @@
 
     <!-- Batch insert daily accuracy records -->
     <insert id="insertDailyAccuracyBatch" parameterType="java.util.List">
-        INSERT /*+ IGNORE_ROW_ON_DUPKEY_INDEX(accuracy_daily(uk_accuracy_daily)) */ INTO accuracy_daily
+        INSERT INTO accuracy_daily
         (source, location_name, latitude, longitude, forecast_time_utc, target_date, forecast_horizon,
          temperature_min_mae, temperature_max_mae, temperature_mean_mae,
          temperature_min_bias, temperature_max_bias, temperature_mean_bias,
          precipitation_mae, precipitation_bias, wind_speed_mae, wind_speed_bias)
-        <foreach collection="list" item="entity" separator=" UNION ALL ">
-            SELECT
-            #{entity.source}, #{entity.locationName}, #{entity.latitude}, #{entity.longitude},
-            #{entity.forecastTimeUtc}, #{entity.targetDate}, #{entity.forecastHorizon},
-            #{entity.temperatureMinMae}, #{entity.temperatureMaxMae}, #{entity.temperatureMeanMae},
-            #{entity.temperatureMinBias}, #{entity.temperatureMaxBias}, #{entity.temperatureMeanBias},
-            #{entity.precipitationMae}, #{entity.precipitationBias}, #{entity.windSpeedMae}, #{entity.windSpeedBias}
-            FROM dual
+        VALUES
+        <foreach collection="list" item="entity" separator=",">
+            (#{entity.source}, #{entity.locationName}, #{entity.latitude}, #{entity.longitude},
+             #{entity.forecastTimeUtc}, #{entity.targetDate}, #{entity.forecastHorizon},
+             #{entity.temperatureMinMae}, #{entity.temperatureMaxMae}, #{entity.temperatureMeanMae},
+             #{entity.temperatureMinBias}, #{entity.temperatureMaxBias}, #{entity.temperatureMeanBias},
+             #{entity.precipitationMae}, #{entity.precipitationBias}, #{entity.windSpeedMae}, #{entity.windSpeedBias})
         </foreach>
     </insert>
 

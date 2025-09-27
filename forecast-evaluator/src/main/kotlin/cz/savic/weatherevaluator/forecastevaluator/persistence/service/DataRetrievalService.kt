@@ -49,7 +49,6 @@ class DataRetrievalService(private val sqlSessionFactory: SqlSessionFactory) {
                 forecast.targetTime
             )
             session.commit()
-            logger.debug { "Marked hourly forecast as processed: ${forecast.locationName} at ${forecast.targetTime}" }
         }
     }
 
@@ -63,7 +62,6 @@ class DataRetrievalService(private val sqlSessionFactory: SqlSessionFactory) {
                 forecast.targetDate
             )
             session.commit()
-            logger.debug { "Marked daily forecast as processed: ${forecast.locationName} on ${forecast.targetDate}" }
         }
     }
 
