@@ -1,3 +1,9 @@
+<!--
+Attribution: This file is adapted from the context-engineering-intro repository
+by Cole Medin (https://github.com/coleam00/context-engineering-intro)
+Licensed under MIT License
+-->
+
 ```markdown
 # Command: analyze-performance
 

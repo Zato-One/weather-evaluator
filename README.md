@@ -75,6 +75,19 @@ No need to create the user or schema manually.
 
 ---
 
+---
+
+## 🙏 Acknowledgments
+
+This project's AI development workflow and context engineering approach is inspired by and adapted from:
+
+- **[context-engineering-intro](https://github.com/coleam00/context-engineering-intro)** by [Cole Medin](https://github.com/coleam00)
+- **["A Complete Guide to Claude Code - Here are ALL the Best Strategies"](https://www.youtube.com/watch?v=amEUIuBKwvg)** video tutorial
+
+The AI-related files in `ai/` and `.claude/` directories contain content adapted from Cole Medin's repository, which demonstrates context engineering techniques for AI coding assistants. Special thanks to Cole for sharing these valuable methodologies with the community.
+
+---
+
 ## 🏗️ Architecture Principles Compliance
 
 This project demonstrates adherence to microservice and event-driven architecture principles:

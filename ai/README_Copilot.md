@@ -1,5 +1,11 @@
 # 🚀 Full Guide to Using GitHub Copilot
 
+<!--
+Attribution: This file is adapted from the context-engineering-intro repository
+by Cole Medin (https://github.com/coleam00/context-engineering-intro)
+Licensed under MIT License
+-->
+
 ⚠️ **WARNING**: This file was generated from ai/README_CC.md and adapted for GitHub Copilot using AI. The content has been automatically converted and modified to fit GitHub Copilot instead of Claude Code. While some sections have been reviewed, I cannot guarantee the accuracy or functionality of any of the described features and workflows. Use at your own discretion and always verify functionality before relying on these instructions.
 
 Everything you need to know to crush building anything with GitHub Copilot! This guide takes you from installation through advanced context engineering, specialized workflows, and parallel development.

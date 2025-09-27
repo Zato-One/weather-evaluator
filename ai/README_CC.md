@@ -1,5 +1,11 @@
 # 🚀 Full Guide to Using Claude Code
 
+<!--
+Attribution: This file is adapted from the context-engineering-intro repository
+by Cole Medin (https://github.com/coleam00/context-engineering-intro)
+Licensed under MIT License
+-->
+
 Everything you need to know to crush building anything with Claude Code! This guide takes you from installation through advanced context engineering, subagents, hooks, and parallel agent workflows.
 
 ## 📋 Prerequisites
