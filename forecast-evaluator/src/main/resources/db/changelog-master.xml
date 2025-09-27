@@ -6,5 +6,6 @@
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.31.xsd">
 
     <include file="changelog-001-accuracy-tables.sql" relativeToChangelogFile="true"/>
+    <include file="changelog-002-add-accuracy-percentages.sql" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

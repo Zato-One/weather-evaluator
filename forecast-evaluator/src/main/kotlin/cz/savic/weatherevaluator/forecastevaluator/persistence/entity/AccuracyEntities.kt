@@ -5,6 +5,11 @@ import cz.savic.weatherevaluator.forecastevaluator.accuracy.DailyAccuracyResult
 import cz.savic.weatherevaluator.forecastevaluator.accuracy.HourlyAccuracyResult
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.math.max
+
+private fun calculateToleranceAccuracy(mae: Double, tolerance: Double): Double {
+    return if (mae <= tolerance) 100.0 else max(0.0, 100.0 - (mae / tolerance * 50.0))
+}
 
 data class HourlyAccuracyEntity(
     val id: Long? = null,
@@ -24,6 +29,10 @@ data class HourlyAccuracyEntity(
 
     val windSpeedMae: Double,
     val windSpeedBias: Double,
+
+    val temperatureAccuracyPercent: Double,
+    val precipitationAccuracyPercent: Double,
+    val windSpeedAccuracyPercent: Double,
 
     val createdAt: LocalDateTime? = null
 ) {
@@ -45,7 +54,11 @@ data class HourlyAccuracyEntity(
                 precipitationBias = result.precipitationBias,
 
                 windSpeedMae = result.windSpeedMae,
-                windSpeedBias = result.windSpeedBias
+                windSpeedBias = result.windSpeedBias,
+
+                temperatureAccuracyPercent = calculateToleranceAccuracy(result.temperatureMae, 2.0),
+                precipitationAccuracyPercent = calculateToleranceAccuracy(result.precipitationMae, 1.0),
+                windSpeedAccuracyPercent = calculateToleranceAccuracy(result.windSpeedMae, 3.0)
             )
         }
     }
@@ -75,6 +88,12 @@ data class DailyAccuracyEntity(
     val windSpeedMae: Double,
     val windSpeedBias: Double,
 
+    val temperatureMinAccuracyPercent: Double,
+    val temperatureMaxAccuracyPercent: Double,
+    val temperatureMeanAccuracyPercent: Double,
+    val precipitationAccuracyPercent: Double,
+    val windSpeedAccuracyPercent: Double,
+
     val createdAt: LocalDateTime? = null
 ) {
     companion object {
@@ -100,7 +119,13 @@ data class DailyAccuracyEntity(
                 precipitationBias = result.precipitationBias,
 
                 windSpeedMae = result.windSpeedMae,
-                windSpeedBias = result.windSpeedBias
+                windSpeedBias = result.windSpeedBias,
+
+                temperatureMinAccuracyPercent = calculateToleranceAccuracy(result.temperatureMinMae, 2.0),
+                temperatureMaxAccuracyPercent = calculateToleranceAccuracy(result.temperatureMaxMae, 2.0),
+                temperatureMeanAccuracyPercent = calculateToleranceAccuracy(result.temperatureMeanMae, 2.0),
+                precipitationAccuracyPercent = calculateToleranceAccuracy(result.precipitationMae, 2.0),
+                windSpeedAccuracyPercent = calculateToleranceAccuracy(result.windSpeedMae, 3.0)
             )
         }
     }
