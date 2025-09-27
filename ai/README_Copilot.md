@@ -1,5 +1,7 @@
 # 🚀 Full Guide to Using GitHub Copilot
 
+⚠️ **WARNING**: This file was generated from ai/README_CC.md and adapted for GitHub Copilot using AI. The content has been automatically converted and modified to fit GitHub Copilot instead of Claude Code. While some sections have been reviewed, I cannot guarantee the accuracy or functionality of any of the described features and workflows. Use at your own discretion and always verify functionality before relying on these instructions.
+
 Everything you need to know to crush building anything with GitHub Copilot! This guide takes you from installation through advanced context engineering, specialized workflows, and parallel development.
 
 ## 📋 Prerequisites
@@ -83,6 +85,8 @@ echo "Follow coding standards from: docs/coding-standards.md" > COPILOT-INSTRUCT
 *Note: GitHub Copilot instruction files work across VS Code, IntelliJ, and GitHub.com*
 
 ---
+
+⚠️ **WARNING**: The content below this point was AI-generated and has not been validated. The instructions may be incorrect, incomplete, or may not work as described. Even the sections above (up to TIP 1) that have been partially reviewed should be verified before use, as I cannot guarantee their complete accuracy when adapted from Claude Code to GitHub Copilot.
 
 ## ✅ TIP 2: CONFIGURE GITHUB COPILOT SETTINGS
 
