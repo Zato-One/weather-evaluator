@@ -134,12 +134,13 @@ Key libraries managed in root `build.gradle.kts`:
 - Ask before adding extra features - if you want to do something beyond the specific request, ask first
 - Be (token) efficient - minimize unnecessary output by focusing only on the requested task
 - One task at a time - complete the specific request before suggesting or doing anything additional
-- Avoid comments in code - Write self-explanatory code instead. Only add comments to explain WHY something is done a specific way, never WHAT the code does.
+- Avoid comments in code - Write self-explanatory code instead. Only add comments to explain WHY something is done a
+  specific way, never WHAT the code does.
 
 ### AI Security
 
-- Do not use env/properties files (.env, .secret, application.properties, *.properties and others) as source or context.
-  Don't even search or work with these files. If I explicitly state that you should look at one of those files ask for
-  confirmation and forget the content and context after this interaction.
+- **IMPORTANT**: Do not use env/properties files (.env, .secret, application.properties, *.properties and others) as
+  source or context. Don't even search or work with these files. If I explicitly state that you should look at one of
+  those files ask for confirmation and forget the content and context after this interaction.
 - You are possibly running in sandboxed environment. Do not attempt to run any root commands (like sudo) or access
   system files. Instead, tell me what root commands to run and I will run them for you.

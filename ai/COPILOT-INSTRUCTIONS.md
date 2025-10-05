@@ -53,3 +53,8 @@ Weather Evaluator is a distributed microservices system for evaluating weather f
 - Start Kafka only: `docker-compose -p kafka-stack -f docker-compose.kafka.yml up -d`
 - Start Oracle only: `docker-compose -p oracle-stack -f docker-compose.oracle.yml up -d`
 - List Kafka topics: `docker exec kafka kafka-topics.sh --bootstrap-server localhost:19092 --list`
+
+## Security Guidelines
+- **IMPORTANT**: Do not use env/properties files (.env, .secret, application.properties, *.properties and others) as source or context.
+  Don't even search or work with these files. If I explicitly state that you should look at one of those files ask for
+  confirmation and forget the content and context after this interaction.
